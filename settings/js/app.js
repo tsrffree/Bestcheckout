@@ -694,6 +694,8 @@
       'BestCheckout uses the detected container for checkout events.': 'BestCheckout 使用检测到的容器发送结账事件。',
       'Please enter a Measurement ID.': '请输入 Measurement ID。',
       'Please enter a Container ID.': '请输入 Container ID。',
+      'Enter a valid GA4 Measurement ID (G- followed by letters and numbers).': '请输入有效的 GA4 Measurement ID (G- 加字母和数字).',
+      'Enter a valid GTM Container ID (GTM- followed by letters and numbers).': '请输入有效的 GTM Container ID (GTM- 加字母和数字).',
       'Please enter a Pixel ID.': '请输入 Pixel ID。',
       'This ID must match one of the IDs detected on your Shopify storefront.': '该 ID 必须与店铺前台检测到的任一 ID 匹配。',
       'The saved Pixel ID must match the unique Pixel detected on your storefront.': '已保存的 Pixel ID 必须与店铺前台唯一检测到的 Pixel 一致。',
@@ -764,8 +766,6 @@
       'All pages': 'All pages',
       'Bestcheckout pages': 'Bestcheckout pages',
       'Source': '来源',
-      'Shopify store': 'Shopify store',
-      'Manual setup': 'Manual setup',
       'ON': 'ON',
       'Off': 'Off',
       'Pixel deleted.': '像素已删除。',
@@ -774,6 +774,15 @@
       'Delete this Pixel?': '删除此像素？',
       'Delete this Measurement ID?': '删除此 Measurement ID？',
       'Delete this Container?': '删除此容器？',
+      'Delete this Trybe Pixel?': '删除此 Trybe Pixel？',
+      'This Pixel will be removed from the list. Checkout events will no longer be sent to this ID.': '该 Pixel 将从列表中移除, 之后不再向此 ID 发送结账事件.',
+      'This Measurement ID will be removed from the list. Checkout events will no longer be sent to this ID.': '该 Measurement ID 将从列表中移除, 之后不再向此 ID 发送结账事件.',
+      'This Container will be removed from the list. Checkout events will no longer be sent to this ID.': '该容器将从列表中移除, 之后不再向此 ID 发送结账事件.',
+      'This Trybe Pixel will be removed from the list. Checkout events will no longer be sent to this Pixel.': '该 Trybe Pixel 将从列表中移除, 之后不再向此 Pixel 发送结账事件.',
+      'Remove': '移除',
+      'Close': '关闭',
+      'Credential saved': '已保存凭证',
+      'BestCheckout event': 'BestCheckout 事件',
       'Remove manually added Conversions API?': '移除手动添加的 Conversions API？',
       'Remove manually added Measurement Protocol?': '移除手动添加的 Measurement Protocol？',
       'This keeps the detected Pixel and only removes the Access Token.': '将保留已检测的 Pixel，仅移除 Access Token。',
@@ -793,6 +802,10 @@
       'Install Trybe on Shopify first. BestCheckout may detect the Pixel from the Shopify install. Orders API keys are never detected — paste them manually on a detected or custom Pixel.': '请先在 Shopify 安装 Trybe。BestCheckout 可能检测到 Shopify 安装带来的 Pixel；Orders API key 不会被检测，需手动粘贴到检测行或自定义 Pixel 上。',
       'Paste the private Orders API key manually so BestCheckout can also send completed purchases to Trybe from the server. This key is never auto-detected.': '请手动粘贴 Orders API 私钥，以便 BestCheckout 从服务端向 Trybe 补发已完成购买。该 key 不会被自动检测。',
       'Detected rows come from the Trybe Shopify install and cannot be deleted. Orders API keys must be pasted manually. You can still add one custom Pixel for BestCheckout pages.': '检测行来自 Trybe 的 Shopify 安装且不可删除。Orders API key 必须手动粘贴。仍可再添加一条用于 BestCheckout 页面的自定义 Pixel。',
+      'Detected Pixel IDs come from your Shopify storefront and cannot be edited. You can still rename the row and paste an Access Token.': '检测到的 Pixel ID 来自 Shopify 店铺前台, 不可编辑. 仍可修改名称并粘贴 Access Token.',
+      'Detected Measurement IDs come from your Shopify storefront and cannot be edited. You can still rename the row and paste an API Secret.': '检测到的 Measurement ID 来自 Shopify 店铺前台, 不可编辑. 仍可修改名称并粘贴 API Secret.',
+      'Detected Container IDs come from your Shopify storefront and cannot be edited. You can still rename the row.': '检测到的 Container ID 来自 Shopify 店铺前台, 不可编辑. 仍可修改名称.',
+      'Detected IDs come from your Shopify storefront and cannot be edited. You can still rename the row and paste a server credential.': '检测到的 ID 来自 Shopify 店铺前台, 不可编辑. 仍可修改名称并粘贴服务端凭证.',
       'Keep one primary GTM container to avoid duplicate Meta, GA4, or Ads tags.': '建议只保留一个主 GTM 容器, 避免 Meta、GA4 或 Ads 标签重复触发。',
       'Paste the Access Token from Meta Events Manager for this Pixel.': '粘贴 Meta Events Manager 中该 Pixel 的 Access Token。',
       'Paste the Measurement Protocol API Secret for this Measurement ID.': '粘贴该 Measurement ID 的 Measurement Protocol API Secret。',
@@ -4489,19 +4502,21 @@
     return { m, close };
   }
 
-  // Error alert: title + copy + close (X) only. No footer actions.
+  // Error / block alert: title + copy + single Close (same pattern as Got it / Close informs).
   const alertModal = (opts) => {
     const title = String(opts.title || '');
     const alreadyOpen = [...document.querySelectorAll('.modal-backdrop')].some((backdrop) => {
       const head = backdrop.querySelector('.modal-head span');
-      return head && head.textContent === title && !backdrop.querySelector('.modal-foot');
+      return head && head.textContent === title;
     });
     if (alreadyOpen) return null;
     return modal({
       title: title,
       width: opts.width || 460,
       body: '<div class="muted" style="font-size:13.5px;line-height:1.6">' + esc(opts.content || '') + '</div>',
-      hideFooter: true,
+      okText: opts.okText || 'Close',
+      hideCancel: true,
+      onOk: (m, close) => { close(); },
     });
   };
 
@@ -7210,7 +7225,7 @@
       detected.forEach((id) => {
         if (byId.has(id)) {
           const item = byId.get(id);
-          if (!item.source) item.source = 'detected';
+          item.source = 'detected';
         } else {
           const next = { id, source: 'detected' };
           if (credentialKey) next[credentialKey] = '';
@@ -7238,7 +7253,6 @@
     ga4.items = sortItems(ga4.items, 'apiSecret');
     gtm.items = sortItems(gtm.items, '');
     trybe.items = sortItems(trybe.items, 'apiKey');
-    const status = (label, tone) => '<span class="aa-status ' + (tone || 'neutral') + '"><i></i>' + esc(localize(label)) + '</span>';
     const parseTrybePixelCode = (snippet) => {
       const match = String(snippet || '').match(/px_[a-zA-Z0-9]+/);
       return match ? match[0] : '';
@@ -7260,6 +7274,7 @@
         capiDesc: 'Paste an Access Token to also send completed purchases (Purchase) from the server. Leave blank to keep browser events only.',
         credentialRequired: 'Please enter an Access Token to enable Conversions API.',
         deleteConfirm: 'Delete this Pixel?',
+        deleteConfirmCopy: 'This Pixel will be removed from the list. Checkout events will no longer be sent to this ID.',
         deletedToast: 'Pixel deleted.',
         credentialKey: 'accessToken',
         credentialConfigured: 'Access token configured',
@@ -7281,6 +7296,7 @@
         idPlaceholder: 'Paste Pixel ID',
         idRequired: 'Please enter a Pixel ID.',
         pasteHint: 'Paste the Access Token from Meta Events Manager for this Pixel.',
+        detectedHint: 'Detected Pixel IDs come from your Shopify storefront and cannot be edited. You can still rename the row and paste an Access Token.',
       },
       ga4: {
         kind: 'ga4',
@@ -7298,6 +7314,7 @@
         capiDesc: 'Paste an API Secret to also send completed purchases (purchase) from the server. Leave blank to keep browser events only.',
         credentialRequired: 'Please enter an API Secret to enable Measurement Protocol.',
         deleteConfirm: 'Delete this Measurement ID?',
+        deleteConfirmCopy: 'This Measurement ID will be removed from the list. Checkout events will no longer be sent to this ID.',
         deletedToast: 'Measurement ID deleted.',
         credentialKey: 'apiSecret',
         credentialConfigured: 'API secret configured',
@@ -7316,10 +7333,13 @@
         addedToast: 'Measurement ID added.',
         idPrompt: 'BestCheckout uses the Measurement ID for checkout browser events. Add an API Secret to also send GA4 server-side events.',
         idField: 'Measurement ID',
-        idPlaceholder: 'Paste Measurement ID',
+        idPlaceholder: 'G-XXXXXXXX',
         idRequired: 'Please enter a Measurement ID.',
+        // Official GA4 web Measurement ID: G- + letters/numbers (support.google.com/analytics/answer/12270356).
+        idPattern: /^G-[A-Z0-9]+$/i,
+        idInvalid: 'Enter a valid GA4 Measurement ID (G- followed by letters and numbers).',
         pasteHint: 'Paste the Measurement Protocol API Secret for this Measurement ID.',
-        secretInput: true,
+        detectedHint: 'Detected Measurement IDs come from your Shopify storefront and cannot be edited. You can still rename the row and paste an API Secret.',
       },
       gtm: {
         kind: 'gtm',
@@ -7335,14 +7355,19 @@
         namePlaceholder: 'Enter container name',
         credentialKey: '',
         deleteConfirm: 'Delete this Container?',
+        deleteConfirmCopy: 'This Container will be removed from the list. Checkout events will no longer be sent to this ID.',
         deletedToast: 'Container deleted.',
         emptyCopy: 'No Container listed yet. Add one to start browser event delivery.',
         addedToast: 'Container added.',
         idPrompt: 'Enter the GTM Container ID to track in BestCheckout.',
         formHint: 'Keep one primary GTM container to avoid duplicate Meta, GA4, or Ads tags.',
         idField: 'Container ID',
-        idPlaceholder: 'Paste Container ID',
+        idPlaceholder: 'GTM-XXXXXX',
         idRequired: 'Please enter a Container ID.',
+        // Official GTM container ID: GTM- + letters/numbers (support.google.com/tagmanager).
+        idPattern: /^GTM-[A-Z0-9]+$/i,
+        idInvalid: 'Enter a valid GTM Container ID (GTM- followed by letters and numbers).',
+        detectedHint: 'Detected Container IDs come from your Shopify storefront and cannot be edited. You can still rename the row.',
       },
       trybe: {
         kind: 'trybe',
@@ -7366,6 +7391,7 @@
         capiDesc: 'Paste the private Orders API key manually so BestCheckout can also send completed purchases to Trybe from the server. This key is never auto-detected.',
         credentialRequired: 'Please enter an Orders API key to enable server reporting.',
         deleteConfirm: 'Delete this Trybe Pixel?',
+        deleteConfirmCopy: 'This Trybe Pixel will be removed from the list. Checkout events will no longer be sent to this Pixel.',
         deletedToast: 'Trybe Pixel deleted.',
         credentialKey: 'apiKey',
         credentialConfigured: 'Orders API configured',
@@ -7381,13 +7407,24 @@
         idPlaceholder: 'px_…',
         idRequired: 'Please enter a Pixel code.',
         formHint: 'Detected rows come from the Trybe Shopify install and cannot be deleted. Orders API keys must be pasted manually. You can still add one custom Pixel for BestCheckout pages.',
-        secretInput: true,
       },
     };
+    // Same connection-status chip as Clarity / Klaviyo (Not connected / Connected).
+    const status = (label, tone) => {
+      const ok = tone === 'detected' ? ' ok' : '';
+      return '<span class="aa-detect-status' + ok + '"><i class="aa-detect-dot"></i>' + esc(localize(label)) + '</span>';
+    };
+    // Same mask pattern as Billing payment method: head 4 + ···· + tail 4.
+    const maskCredential = (value) => {
+      const raw = String(value || '').trim();
+      if (!raw) return { text: '—', title: '' };
+      if (raw.length < 8) return { text: '····', title: localize('Credential saved') };
+      return { text: raw.slice(0, 4) + '····' + raw.slice(-4), title: localize('Credential saved') };
+    };
     const field = (label, attr, value, placeholder, opts) =>
-      '<label class="aa-token-field"><span>' + esc(localize(label)) + (opts && opts.optional ? ' <b class="muted" style="font-weight:500">(' + esc(localize('Optional')) + ')</b>' : '') + '</span><input class="input" type="' + ((opts && opts.secret) ? 'password' : 'text') + '" autocomplete="off" spellcheck="false" ' + ((opts && opts.readOnly) ? 'readonly ' : '') + attr + ' placeholder="' + esc(placeholder) + '" value="' + esc(value || '') + '" /></label>';
-    const areaField = (label, attr, value, placeholder) =>
-      '<label class="aa-token-field"><span>' + esc(localize(label)) + '</span><textarea class="input" ' + attr + ' placeholder="' + esc(placeholder) + '" style="min-height:120px;height:auto;padding:8px 11px;resize:vertical;width:100%;box-sizing:border-box;font-weight:400;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px">' + esc(value || '') + '</textarea></label>';
+      '<label class="aa-token-field"><span>' + esc(localize(label)) + (opts && opts.required ? ' <span style="color:var(--err)">*</span>' : '') + (opts && opts.optional ? ' <b class="muted" style="font-weight:500">(' + esc(localize('Optional')) + ')</b>' : '') + '</span><input class="input" type="' + ((opts && opts.secret) ? 'password' : 'text') + '" autocomplete="off" spellcheck="false" ' + ((opts && opts.readOnly) ? 'readonly ' : '') + attr + ' placeholder="' + esc(placeholder) + '" value="' + esc(value || '') + '" /></label>';
+    const areaField = (label, attr, value, placeholder, opts) =>
+      '<label class="aa-token-field"><span>' + esc(localize(label)) + (opts && opts.required ? ' <span style="color:var(--err)">*</span>' : '') + '</span><textarea class="input" ' + attr + ' placeholder="' + esc(placeholder) + '" style="min-height:120px;height:auto;padding:8px 11px;resize:vertical;width:100%;box-sizing:border-box;font-weight:400;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px">' + esc(value || '') + '</textarea></label>';
     const hasManualCredential = (item, def) => Boolean(
       def.credentialKey &&
       String(item[def.credentialKey] || '').trim() &&
@@ -7397,6 +7434,12 @@
       if (def.customCode && item.source === 'detected') return false;
       return item.source === 'manual' || hasManualCredential(item, def);
     };
+    // Detected rows keep the ID; the destructive action only clears the pasted credential.
+    const removesCredentialOnly = (item, def) => Boolean(
+      item && item.source !== 'manual' && hasManualCredential(item, def)
+    );
+    const destroyActionLabel = (item, def) =>
+      removesCredentialOnly(item, def) ? 'Remove' : 'Delete';
     const channelLimit = (def) => def.maxItems || AA_MAX;
     const manualCount = (bucket) => (bucket.items || []).filter((item) => item.source === 'manual').length;
     const canAddItem = (channel, def) => {
@@ -7423,20 +7466,21 @@
         const name = String(item.name || '').trim();
         const sourceLabel = item.source === 'manual' ? 'Manual setup' : 'Shopify store';
         const allowDelete = canDeleteItem(item, def);
+        const masked = def.credentialKey ? maskCredential(credentialValue) : null;
         const capiCell = def.credentialKey
           ? (credentialValue
-            ? '<td class="aa-cred-cell"><span class="aa-cred-value" title="' + esc(credentialValue) + '">' + esc(credentialValue) + '</span></td>'
+            ? '<td class="aa-cred-cell"><span class="aa-cred-value" title="' + esc(masked.title) + '">' + esc(masked.text) + '</span></td>'
             : '<td class="aa-cred-cell">—</td>')
           : '';
         return '<tr>' +
           '<td>' + esc(id) + '</td>' +
-          '<td>' + esc(localize(sourceLabel)) + '</td>' +
+          '<td><span data-i18n-skip>' + esc(sourceLabel) + '</span></td>' +
           '<td style="font-weight:500;color:var(--ink)">' + esc(name || '—') + '</td>' +
           capiCell +
           '<td class="aa-action-cell"><div class="flex" style="gap:2px">' +
             '<button class="sp-icon-btn" type="button" data-aa-edit="' + esc(channel) + '" data-aa-id="' + esc(id) + '" title="' + esc(localize('Edit')) + '">' + I.pencil + '</button>' +
             (allowDelete
-              ? '<button class="sp-icon-btn danger" type="button" data-aa-delete="' + esc(channel) + '" data-aa-id="' + esc(id) + '" title="' + esc(localize('Delete')) + '">' + I.trash + '</button>'
+              ? '<button class="sp-icon-btn danger" type="button" data-aa-delete="' + esc(channel) + '" data-aa-id="' + esc(id) + '" title="' + esc(localize(destroyActionLabel(item, def))) + '">' + I.trash + '</button>'
               : '') +
           '</div></td>' +
         '</tr>';
@@ -7472,13 +7516,13 @@
       ? '<p>' + esc(localize('No storefront tags were detected. Add a Pixel, Measurement ID, Container, or Trybe Pixel before BestCheckout can send checkout events.')) + '</p><p>' + esc(localize('Event names below stay ready. Nothing is delivered until at least one destination ID is listed.')) + '</p>'
       : '<p>' + esc(localize('Browser events: Detected Meta Pixel, GA4, GTM, and Trybe tags receive the matching browser events in the table.')) + '</p><p>' + esc(localize('Trybe events: Product Viewed, Add to Cart, and Checkout. Product Viewed and Add to Cart stay on the Shopify storefront. BestCheckout maps purchase to Checkout on the thank-you page; begin_checkout has no Trybe mapping. When an Orders API key is saved, completed orders are also submitted via the Orders API.')) + '</p><p>' + esc(localize('Browser events go to every listed ID. Server Purchase uses only the Primary combination with a saved credential.')) + '</p><p>' + esc(localize('Server credentials (Access Token, API Secret, Orders API key) are always entered manually. Detection only finds destination IDs.')) + '</p><p>' + esc(localize('Server Purchase: After you manually save a Meta access token, GA4 API secret, or Trybe Orders API key, BestCheckout also sends completed purchases from the server; other checkout events stay browser-only. Within each destination, browser and server copies of the same order are counted once. Credentials are never auto-detected.')) + '</p>';
     const styles =
-      '.aa-page{display:grid;gap:12px;max-width:1080px}.aa-page-head{margin:0}.aa-page-sub{margin:2px 0 0;font-size:13px;line-height:1.5}.aa-page-sub a{color:var(--brand);font-weight:600;text-decoration:none}.aa-page-sub a:hover{text-decoration:underline}.aa-config-stack{display:grid;gap:14px}.aa-tool-card{overflow:hidden;border:1px solid var(--hair);border-radius:12px;background:#fff}.aa-tool-card>header{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;padding:17px 18px 14px;border-bottom:1px solid #eef1f4}.aa-tool-actions{display:flex;align-items:center;gap:10px;flex:none;justify-self:end}.aa-tool-actions .btn{height:28px;padding:0 12px;font-size:12px}.aa-tool-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:10px}.aa-tool-icon.meta{color:#1466d9;background:#eaf2ff}.aa-tool-icon.ga4{color:#d97706;background:#fff4df}.aa-tool-icon.gtm{color:#246fdb;background:#edf5ff}.aa-tool-icon.trybe{color:#0f766e;background:#e6f7f4}.aa-tool-card h2{margin:0;color:var(--ink);font-size:16px;line-height:1.35}.aa-tool-card header p{margin:4px 0 0;color:var(--ink-muted);font-size:12px;line-height:1.5}.aa-status{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;color:#6b7280;background:#f4f5f7;font-size:11px;font-weight:700;white-space:nowrap}.aa-status i{width:6px;height:6px;border-radius:50%;background:#8a94a6}.aa-status.active{color:#167447;background:#e6f6ec}.aa-status.active i{background:#1a9b56}.aa-status.detected{color:#185e9d;background:#eaf4ff}.aa-status.detected i{background:#3585d6}.aa-status.attention{color:#aa5410;background:#fff0df}.aa-status.attention i{background:#d97706}.aa-pixel-table-wrap{border-top:1px solid var(--hair)}.aa-pixel-table{width:100%;table-layout:fixed;font-size:13.5px}.aa-pixel-table thead th,.aa-pixel-table tbody td{padding:12px 16px;vertical-align:middle;white-space:nowrap}.aa-pixel-table thead th{background:#fff;text-align:left;font-weight:600;color:var(--ink)}.aa-pixel-table tbody td{color:var(--ink-body)}.aa-pixel-table tbody tr{cursor:default}.aa-pixel-table th:nth-child(1),.aa-pixel-table td:nth-child(1){width:160px}.aa-pixel-table th:nth-child(2),.aa-pixel-table td:nth-child(2){width:130px}.aa-pixel-table .aa-action-cell{width:110px}.aa-pixel-table--cred th:nth-child(3),.aa-pixel-table--cred td:nth-child(3){width:150px}.aa-pixel-table--cred .aa-cred-cell{width:auto;max-width:0}.aa-pixel-table:not(.aa-pixel-table--cred) th:nth-child(3),.aa-pixel-table:not(.aa-pixel-table--cred) td:nth-child(3){width:auto;max-width:0}.aa-pixel-table .aa-cred-value{display:block;overflow:hidden;min-width:0;color:var(--ink-body);font:13.5px/1.35 ui-monospace,Menlo,Consolas,monospace;text-overflow:ellipsis;white-space:nowrap;cursor:default}.aa-pixel-table .sp-icon-btn{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:7px;border:0;background:transparent;color:var(--ink-muted);cursor:pointer}.aa-pixel-table .sp-icon-btn:hover{background:var(--panel);color:var(--ink)}.aa-pixel-table .sp-icon-btn.danger:hover{color:var(--err)}.aa-event-coverage{overflow:hidden;border:1px solid var(--hair);border-radius:12px;background:#fff}.aa-event-coverage-head{display:grid;gap:3px;padding:16px 18px}.aa-event-coverage-head strong{color:var(--ink);font-size:14px}.aa-event-coverage-head small{color:var(--ink-muted);font-size:12px;line-height:1.45}.aa-event-note{display:flex;gap:10px;margin:0 18px 14px;padding:10px 11px;border:1px solid #dbe8fb;border-radius:8px;color:#365675;background:#f7faff;font-size:12px;line-height:1.5}.aa-event-note svg{flex:none;margin-top:1px}.aa-event-note-copy{display:grid;gap:5px;min-width:0}.aa-event-note-copy p{margin:0}.aa-event-table{width:100%;border-collapse:collapse;border-top:1px solid #edf0f3}.aa-event-table th,.aa-event-table td{padding:10px 16px;border-bottom:1px solid #edf0f3;color:var(--ink-body);font-size:12px;text-align:left;vertical-align:top}.aa-event-table th{color:var(--ink-muted);background:#fafbfc;font-size:11px;font-weight:650}.aa-event-table td:first-child{display:grid;gap:4px}.aa-event-table code{width:max-content;max-width:100%;overflow:hidden;padding:2px 4px;border-radius:4px;color:#3e5774;background:#eff3f7;font:11px/1.25 ui-monospace,Menlo,Consolas,monospace;text-overflow:ellipsis;white-space:nowrap}.aa-token-field{display:grid;gap:7px;margin-top:14px;color:var(--ink);font-size:12px;font-weight:650}.aa-token-field .input{width:100%;height:38px;font-weight:400}.aa-disconnect{border:0;background:transparent;color:var(--err);font:inherit;font-size:12px;font-weight:650;cursor:pointer}.aa-token-field .input::placeholder{font-weight:400}.aa-modal-list{display:grid;gap:9px;margin:4px 0}.aa-modal-list>div{display:flex;justify-content:space-between;gap:16px;padding-bottom:9px;border-bottom:1px solid #edf0f3;color:var(--ink-muted);font-size:12px}.aa-modal-list>div:last-child{border-bottom:0}.aa-modal-list b{color:var(--ink);font-weight:600;text-align:right}.aa-modal-note{margin:14px 0 0;padding:10px 11px;border:1px solid #dbe8fb;border-radius:8px;background:#f7faff;color:#365675;font-size:12px;line-height:1.5}@media(max-width:700px){.aa-tool-card>header{grid-template-columns:40px minmax(0,1fr)}.aa-tool-card>header .aa-tool-actions{grid-column:2;justify-self:start;flex-wrap:wrap}.aa-event-table th,.aa-event-table td{padding:9px 11px}.aa-event-table th:nth-child(2),.aa-event-table td:nth-child(2){display:none}}';
+      '.aa-page{display:grid;gap:12px;max-width:1080px}.aa-page-head{margin:0}.aa-page-sub{margin:2px 0 0;font-size:13px;line-height:1.5}.aa-page-sub a{color:var(--brand);font-weight:600;text-decoration:none}.aa-page-sub a:hover{text-decoration:underline}.aa-config-stack{display:grid;gap:14px}.aa-tool-card{overflow:hidden;border:1px solid var(--hair);border-radius:12px;background:#fff}.aa-tool-card>header{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;padding:17px 18px 14px;border-bottom:1px solid #eef1f4}.aa-tool-actions{display:flex;align-items:center;gap:10px;flex:none;justify-self:end}.aa-tool-actions .btn{height:32px;padding:0 14px;font-size:13px}.aa-tool-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:10px}.aa-tool-icon.meta{color:#1466d9;background:#eaf2ff}.aa-tool-icon.ga4{color:#d97706;background:#fff4df}.aa-tool-icon.gtm{color:#246fdb;background:#edf5ff}.aa-tool-icon.trybe{color:#0f766e;background:#e6f7f4}.aa-tool-card h2{margin:0;color:var(--ink);font-size:16px;line-height:1.35}.aa-tool-card header p{margin:4px 0 0;color:var(--ink-muted);font-size:12px;line-height:1.5}.aa-tool-actions .aa-detect-status{flex:none}.aa-detect-status{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:650;line-height:1;white-space:nowrap;background:#f2f4f7;color:var(--ink-muted)}.aa-detect-status.ok{background:#e9f8ef;color:#167443}.aa-detect-dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}.aa-pixel-table-wrap{border-top:1px solid var(--hair)}.aa-pixel-table{width:100%;table-layout:fixed;font-size:13.5px}.aa-pixel-table thead th,.aa-pixel-table tbody td{padding:12px 16px;vertical-align:middle;white-space:nowrap}.aa-pixel-table thead th{background:#fff;text-align:left;font-weight:600;color:var(--ink)}.aa-pixel-table tbody td{color:var(--ink-body)}.aa-pixel-table tbody tr{cursor:default}.aa-pixel-table th:nth-child(1),.aa-pixel-table td:nth-child(1){width:160px}.aa-pixel-table th:nth-child(2),.aa-pixel-table td:nth-child(2){width:130px}.aa-pixel-table .aa-action-cell{width:110px}.aa-pixel-table--cred th:nth-child(3),.aa-pixel-table--cred td:nth-child(3){width:150px}.aa-pixel-table--cred .aa-cred-cell{width:auto;max-width:0}.aa-pixel-table:not(.aa-pixel-table--cred) th:nth-child(3),.aa-pixel-table:not(.aa-pixel-table--cred) td:nth-child(3){width:auto;max-width:0}.aa-pixel-table .aa-cred-value{display:block;overflow:hidden;min-width:0;color:var(--ink-body);font:13.5px/1.35 ui-monospace,Menlo,Consolas,monospace;text-overflow:ellipsis;white-space:nowrap;cursor:default}.aa-pixel-table .sp-icon-btn{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:7px;border:0;background:transparent;color:var(--ink-muted);cursor:pointer}.aa-pixel-table .sp-icon-btn:hover{background:var(--panel);color:var(--ink)}.aa-pixel-table .sp-icon-btn.danger:hover{color:var(--err)}.aa-event-coverage{overflow:hidden;border:1px solid var(--hair);border-radius:12px;background:#fff}.aa-event-coverage-head{display:grid;gap:3px;padding:16px 18px}.aa-event-coverage-head strong{color:var(--ink);font-size:14px}.aa-event-coverage-head small{color:var(--ink-muted);font-size:12px;line-height:1.45}.aa-event-note{display:flex;gap:10px;margin:0 18px 14px;padding:10px 11px;border:1px solid #dbe8fb;border-radius:8px;color:#365675;background:#f7faff;font-size:12px;line-height:1.5}.aa-event-note svg{flex:none;margin-top:1px}.aa-event-note-copy{display:grid;gap:5px;min-width:0}.aa-event-note-copy p{margin:0}.aa-event-table{width:100%;border-collapse:collapse;border-top:1px solid #edf0f3}.aa-event-table th,.aa-event-table td{padding:10px 16px;border-bottom:1px solid #edf0f3;color:var(--ink-body);font-size:12px;text-align:left;vertical-align:top}.aa-event-table th{color:var(--ink-muted);background:#fafbfc;font-size:11px;font-weight:650}.aa-event-table td:first-child{display:grid;gap:4px}.aa-event-table code{width:max-content;max-width:100%;overflow:hidden;padding:2px 4px;border-radius:4px;color:#3e5774;background:#eff3f7;font:11px/1.25 ui-monospace,Menlo,Consolas,monospace;text-overflow:ellipsis;white-space:nowrap}.aa-token-field{display:grid;gap:7px;margin-top:14px;color:var(--ink);font-size:12px;font-weight:650}.aa-token-field .input{width:100%;height:38px;font-weight:400}.aa-disconnect{border:0;background:transparent;color:var(--err);font:inherit;font-size:12px;font-weight:650;cursor:pointer}.aa-token-field .input::placeholder{font-weight:400}.aa-modal-list{display:grid;gap:9px;margin:4px 0}.aa-modal-list>div{display:flex;justify-content:space-between;gap:16px;padding-bottom:9px;border-bottom:1px solid #edf0f3;color:var(--ink-muted);font-size:12px}.aa-modal-list>div:last-child{border-bottom:0}.aa-modal-list b{color:var(--ink);font-weight:600;text-align:right}.aa-modal-note{margin:14px 0 0;padding:10px 11px;border:1px solid #dbe8fb;border-radius:8px;background:#f7faff;color:#365675;font-size:12px;line-height:1.5}@media(max-width:700px){.aa-tool-card>header{grid-template-columns:40px minmax(0,1fr)}.aa-tool-card>header .aa-tool-actions{grid-column:2;justify-self:start;flex-wrap:wrap}.aa-event-table th,.aa-event-table td{padding:9px 11px}.aa-event-table th:nth-child(2),.aa-event-table td:nth-child(2){display:none}}';
     paint(
       '<style>' + styles + '</style>' +
       '<div class="aa-page">' +
         '<div class="aa-page-head"><div class="page-title" style="font-size:20px">' + esc(localize('Advertising & analytics')) + '</div><div class="aa-page-sub muted">' + esc(localize('BestCheckout automatically sends checkout events to tags detected on your Shopify storefront.')) + ' ' + esc(localize('If no tags are detected, go to')) + ' <a href="#/settings/base">' + esc(localize('Settings → Shopify connection')) + '</a> ' + esc(localize('and click Sync now to refresh detection.')) + '</div></div>' +
         '<div class="aa-config-stack">' + toolCard('meta') + toolCard('ga4') + toolCard('gtm') + toolCard('trybe') + '</div>' +
-        '<section class="aa-event-coverage"><div class="aa-event-coverage-head"><strong>' + esc(localize('What BestCheckout sends')) + '</strong><small>' + esc(localize('Once a tag is detected, BestCheckout automatically sends the checkout events shown below. You never need to configure events one by one.')) + '</small></div><div class="aa-event-note">' + I.info + '<div class="aa-event-note-copy">' + eventNoteCopy + '</div></div><div class="tbl-wrap"><table class="aa-event-table"><thead><tr><th>BestCheckout event</th><th>Meta</th><th>GA4</th><th>GTM</th><th>Trybe</th></tr></thead><tbody>' + eventRows + '</tbody></table></div></section>' +
+        '<section class="aa-event-coverage"><div class="aa-event-coverage-head"><strong>' + esc(localize('What BestCheckout sends')) + '</strong><small>' + esc(localize('Once a tag is detected, BestCheckout automatically sends the checkout events shown below. You never need to configure events one by one.')) + '</small></div><div class="aa-event-note">' + I.info + '<div class="aa-event-note-copy">' + eventNoteCopy + '</div></div><div class="tbl-wrap"><table class="aa-event-table"><thead><tr><th>' + esc(localize('BestCheckout event')) + '</th><th data-i18n-skip>Meta</th><th data-i18n-skip>GA4</th><th data-i18n-skip>GTM</th><th data-i18n-skip>Trybe</th></tr></thead><tbody>' + eventRows + '</tbody></table></div></section>' +
       '</div>',
       false
     );
@@ -7486,11 +7530,12 @@
     const findItem = (channel, id) => (ensureChannel(channel).items || []).find((item) => String(item.id) === String(id));
     const findPrimary = (channel, credentialKey) => (ensureChannel(channel).items || []).find((item) => credentialKey && String(item[credentialKey] || '').trim());
     const spField = (label, attr, value, placeholder, opts) =>
-      '<label class="aa-token-field"><span>' + esc(localize(label)) + '</span><input class="input" type="' + ((opts && opts.secret) ? 'password' : 'text') + '" autocomplete="off" spellcheck="false" ' + attr + ' placeholder="' + esc(placeholder) + '" value="' + esc(value || '') + '"/></label>';
+      '<label class="aa-token-field"><span>' + esc(localize(label)) + (opts && opts.required ? ' <span style="color:var(--err)">*</span>' : '') + '</span><input class="input" type="' + ((opts && opts.secret) ? 'password' : 'text') + '" autocomplete="off" spellcheck="false" ' + ((opts && opts.readOnly) ? 'readonly ' : '') + attr + ' placeholder="' + esc(placeholder) + '" value="' + esc(value || '') + '"/></label>';
     const openChannelEditor = (channel, existing) => {
       const def = channelDefs[channel];
       const bucket = ensureChannel(channel);
       const isEdit = Boolean(existing);
+      const isDetected = isEdit && existing && existing.source === 'detected';
       if (!isEdit && !canAddItem(channel, def)) {
         toast(localize(def.customCode
           ? 'You can add one custom Trybe Pixel. Detected Pixels appear separately when BestCheckout finds them.'
@@ -7498,7 +7543,6 @@
         return;
       }
       if (def.customCode) {
-        const isDetected = isEdit && existing.source === 'detected';
         const currentId = isEdit ? String(existing.id || '') : '';
         const currentName = isEdit ? String(existing.name || '') : '';
         const currentSnippet = isEdit ? String(existing.snippet || '') : '';
@@ -7506,15 +7550,15 @@
         const ordersBlock =
           '<div class="aa-token-field"><span>' + esc(localize(def.capiTitle)) + '</span>' +
           '<p class="muted" style="margin:0 0 10px;font-size:12.5px;line-height:1.55;font-weight:400">' + esc(localize(def.capiDesc)) + '</p>' +
-          '<input class="input" type="password" autocomplete="off" spellcheck="false" data-aa-credential placeholder="' + esc(def.fieldPlaceholder) + '" value="' + esc(currentCred) + '"/>' +
+          '<input class="input" type="text" autocomplete="off" spellcheck="false" data-aa-credential placeholder="' + esc(def.fieldPlaceholder) + '" value="' + esc(currentCred) + '"/>' +
           '</div>';
         const body = (def.formHint
           ? '<p class="muted" style="margin:0 0 14px;font-size:12.5px;line-height:1.55">' + esc(localize(def.formHint)) + '</p>'
           : '') +
           field(def.nameField, 'data-aa-name', currentName, def.namePlaceholder) +
           (isDetected
-            ? field(def.idField, 'data-aa-id', currentId, def.idPlaceholder, { readOnly: true })
-            : areaField(def.snippetField, 'data-aa-snippet', currentSnippet, def.snippetPlaceholder)) +
+            ? field(def.idField, 'data-aa-id', currentId, def.idPlaceholder, { readOnly: true, required: true })
+            : areaField(def.snippetField, 'data-aa-snippet', currentSnippet, def.snippetPlaceholder, { required: true })) +
           ordersBlock;
         const saveTrybe = (m, close) => {
           const name = String((m.querySelector('[data-aa-name]') || {}).value || '').trim();
@@ -7596,7 +7640,7 @@
           body: body,
           okText: 'Save',
           extraLeft: isEdit && canDeleteItem(existing, def)
-            ? '<button type="button" class="btn btn-default" data-disc style="color:var(--err);border-color:#f3c4ba">' + esc(localize('Delete')) + '</button>'
+            ? '<button type="button" class="btn btn-default" data-disc style="color:var(--err);border-color:#f3c4ba">' + esc(localize(destroyActionLabel(existing, def))) + '</button>'
             : '',
           onExtra: (m, close) => {
             requestDeleteItem(channel, existing, () => close());
@@ -7615,7 +7659,7 @@
       const capiBlock = def.credentialKey
         ? '<div class="aa-token-field"><span>' + esc(localize(def.capiTitle)) + '</span>' +
           '<p class="muted" style="margin:0 0 10px;font-size:12.5px;line-height:1.55;font-weight:400">' + esc(localize(def.capiDesc)) + '</p>' +
-          '<input class="input" type="' + (def.secretInput ? 'password' : 'text') + '" autocomplete="off" spellcheck="false" data-aa-credential placeholder="' + esc(def.fieldPlaceholder) + '" value="' + esc(currentCred) + '"/>' +
+          '<input class="input" type="text" autocomplete="off" spellcheck="false" data-aa-credential placeholder="' + esc(def.fieldPlaceholder) + '" value="' + esc(currentCred) + '"/>' +
           '</div>'
         : '';
       const hasPrimaryConflict = (nextId) => {
@@ -7631,12 +7675,17 @@
         if (!def.credentialKey) return;
         const credential = String((m.querySelector('[data-aa-credential]') || {}).value || '').trim();
         if (!credential) return;
-        const nextId = String((m.querySelector('[data-aa-id]') || {}).value || '').trim();
+        const nextId = isDetected
+          ? currentId
+          : String((m.querySelector('[data-aa-id]') || {}).value || '').trim();
         if (hasPrimaryConflict(nextId)) showPrimaryConflict();
       };
       const saveItem = (m, close) => {
         const name = String((m.querySelector('[data-aa-name]') || {}).value || '').trim();
-        const nextId = String((m.querySelector('[data-aa-id]') || {}).value || '').trim();
+        const rawId = isDetected
+          ? currentId
+          : String((m.querySelector('[data-aa-id]') || {}).value || '').trim();
+        const nextId = isDetected ? currentId : (def.idPattern ? rawId.toUpperCase() : rawId);
         const credential = def.credentialKey
           ? String((m.querySelector('[data-aa-credential]') || {}).value || '').trim()
           : '';
@@ -7645,7 +7694,11 @@
           toast(localize(def.idRequired), 'warning');
           return;
         }
-        const duplicate = (bucket.items || []).some((other) => String(other.id) === nextId && (!isEdit || String(other.id) !== currentId));
+        if (!isDetected && def.idPattern && !def.idPattern.test(nextId)) {
+          toast(localize(def.idInvalid || def.idRequired), 'warning');
+          return;
+        }
+        const duplicate = (bucket.items || []).some((other) => String(other.id).toUpperCase() === nextId.toUpperCase() && (!isEdit || String(other.id) !== currentId));
         if (duplicate) {
           toast(localize('This ID is already listed.'), 'warning');
           return;
@@ -7661,7 +7714,7 @@
         }
         if (isEdit) {
           existing.name = name;
-          existing.id = nextId;
+          if (!isDetected) existing.id = nextId;
           if (def.credentialKey) {
             if (enabled) {
               existing[def.credentialKey] = credential;
@@ -7684,19 +7737,22 @@
         else if (isEdit) toast(localize(channel === 'ga4' ? 'Measurement ID updated.' : channel === 'gtm' ? 'GTM configuration saved.' : 'Pixel updated.'));
         else toast(localize(def.addedToast));
       };
-      const formHint = def.formHint
+      const detectedHint = isDetected
+        ? '<p class="muted" style="margin:0 0 14px;font-size:12.5px;line-height:1.55">' + esc(localize(def.detectedHint || 'Detected IDs come from your Shopify storefront and cannot be edited. You can still rename the row and paste a server credential.')) + '</p>'
+        : '';
+      const formHint = !isDetected && def.formHint
         ? '<p class="muted" style="margin:0 0 14px;font-size:12.5px;line-height:1.55">' + esc(localize(def.formHint)) + '</p>'
         : '';
       const dialog = modal({
         title: isEdit ? def.editLabel : def.addLabel,
         width: 540,
-        body: formHint +
+        body: detectedHint + formHint +
           spField(def.nameField, 'data-aa-name', currentName, def.namePlaceholder) +
-          spField(def.idField, 'data-aa-id', currentId, def.idPlaceholder || def.idField) +
+          spField(def.idField, 'data-aa-id', currentId, def.idPlaceholder || def.idField, { required: true, readOnly: isDetected }) +
           capiBlock,
         okText: 'Save',
         extraLeft: isEdit && canDeleteItem(existing, def)
-          ? '<button type="button" class="btn btn-default" data-disc style="color:var(--err);border-color:#f3c4ba">' + esc(localize('Delete')) + '</button>'
+          ? '<button type="button" class="btn btn-default" data-disc style="color:var(--err);border-color:#f3c4ba">' + esc(localize(destroyActionLabel(existing, def))) + '</button>'
           : '',
         onExtra: (m, close) => {
           requestDeleteItem(channel, existing, () => close());
@@ -7705,7 +7761,7 @@
       });
       const credInput = dialog.m.querySelector('[data-aa-credential]');
       if (credInput) credInput.addEventListener('blur', () => validateCredentialBlur(dialog.m));
-      const focus = dialog.m.querySelector(isEdit ? '[data-aa-name]' : '[data-aa-id]');
+      const focus = dialog.m.querySelector(isEdit || isDetected ? '[data-aa-name]' : '[data-aa-id]');
       if (focus) focus.focus();
     };
 
@@ -7726,11 +7782,11 @@
         toast(localize('Detected destination IDs cannot be deleted. Remove the manually added server credential instead, or clear it in Edit.'), 'warning');
         return;
       }
-      const removeCredentialOnly = item.source !== 'manual' && hasManualCredential(item, def);
+      const removeCredentialOnly = removesCredentialOnly(item, def);
       confirm({
         title: localize(removeCredentialOnly ? def.removeCredentialConfirm : def.deleteConfirm),
-        content: localize(removeCredentialOnly ? def.removeCredentialCopy : def.deleteConfirm),
-        okText: 'Delete',
+        content: localize(removeCredentialOnly ? def.removeCredentialCopy : (def.deleteConfirmCopy || def.deleteConfirm)),
+        okText: destroyActionLabel(item, def),
         danger: true,
         onOk: () => {
           if (removeCredentialOnly) {

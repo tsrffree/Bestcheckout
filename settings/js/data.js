@@ -174,51 +174,12 @@ window.DATA_SETTINGS = {
   // Storefront detection is runtime evidence only; it never becomes a saved
   // credential until a merchant confirms the corresponding configuration.
   // =========================================================================
-  advertisingAnalytics: {
+  advertisingAnalytics: (function () {
     // Multi-ID model: browser events can fire to every listed ID at once.
     // Within each channel, only one item may hold the server credential
-    // (Meta Access Token / GA4 API Secret). That item is Primary and sorts first.
-    meta: {
-      detection: {
-        pixelIds: ['128745690123042'],
-        source: 'Detected on your Shopify storefront',
-      },
-      items: [
-        { id: '128745690123042', name: 'Meta primary', source: 'detected', accessToken: 'EAABwzLixnjYBOZCAzR8kQmH5nP2vL9xYcT4uW6aB1dF3gH7jK0mN8pQ5rS2tV9wXyZ0aBcDeFgHiJkLmNoPqRsTuVwXyZ1a2b3c4d5e6f7g8h9', credentialSource: 'manual' },
-        { id: '998877665544332', name: 'BestCheckout pixel', source: 'manual', accessToken: '', credentialSource: '' },
-      ],
-    },
-    ga4: {
-      detection: {
-        measurementIds: ['G-4N8P7HJ2'],
-        source: 'Detected on your Shopify storefront',
-      },
-      items: [
-        { id: 'G-4N8P7HJ2', name: 'GA4 main', source: 'detected', apiSecret: 'aBc_DeFgHiJkLmNoPqRsTu' },
-      ],
-    },
-    gtm: {
-      detection: {
-        containerIds: ['GTM-ABC1234'],
-        source: 'Detected on your Shopify storefront',
-      },
-      items: [
-        { id: 'GTM-ABC1234', name: 'GTM checkout', source: 'detected' },
-      ],
-    },
-    // Trybe: detected when Trybe linked Shopify installs storefront tracking
-    // that BestCheckout can see. Merchants may also paste a custom snippet + Orders API key.
-    // Capacity: at most 1 detected + 1 manual (2 total).
-    trybe: {
-      detection: {
-        pixelCodes: ['px_6524bd646578'],
-        source: 'Detected from Trybe Shopify install',
-      },
-      items: [
-        { id: 'px_6524bd646578', name: 'Trybe Shopify', source: 'detected', apiKey: 'tb_ord_live_9c4e2a1f8b7d6e0a3c5f', snippet: '' },
-      ],
-    },
-    events: [
+    // (Meta Access Token / GA4 API Secret / Trybe Orders API key). That item is Primary.
+    // Detected IDs always use source: 'detected' and are not editable in the editor.
+    const events = [
       { id: 'begin_checkout', label: 'Checkout started', meta: 'InitiateCheckout', ga4: 'begin_checkout', gtm: 'begin_checkout', trybe: '—', delivery: 'Checkout session · once' },
       { id: 'checkout_contact_info', label: 'Contact information', meta: '—', ga4: 'checkout_contact_info', gtm: 'checkout_contact_info', trybe: '—', delivery: 'Browser event' },
       { id: 'add_shipping_info', label: 'Shipping information', meta: '—', ga4: 'add_shipping_info', gtm: 'add_shipping_info', trybe: '—', delivery: 'Browser event' },
@@ -227,12 +188,8 @@ window.DATA_SETTINGS = {
       { id: 'post_purchase_offer_accept', label: 'Post-purchase offer accepted', meta: 'PostPurchaseOfferAccept', ga4: 'post_purchase_offer_accept', gtm: 'post_purchase_offer_accept', trybe: '—', delivery: 'Browser event' },
       { id: 'post_purchase_offer_decline', label: 'Post-purchase offer declined', meta: 'PostPurchaseOfferDecline', ga4: 'post_purchase_offer_decline', gtm: 'post_purchase_offer_decline', trybe: '—', delivery: 'Browser event' },
       { id: 'purchase', label: 'Completed purchase', meta: 'Purchase', ga4: 'purchase', gtm: 'purchase', trybe: 'Checkout', delivery: 'Browser + server · once per order' },
-    ],
-  },
-
-  // Plover Studio open-box mock: no storefront tags detected yet.
-  advertisingAnalyticsByStore: {
-    'Plover Studio': {
+    ];
+    const emptyChannels = () => ({
       meta: {
         detection: { pixelIds: [], source: 'Detected on your Shopify storefront' },
         items: [],
@@ -249,8 +206,87 @@ window.DATA_SETTINGS = {
         detection: { pixelCodes: [], source: 'Detected from Trybe Shopify install' },
         items: [],
       },
-    },
-  },
+    });
+    // Detected rows use source: 'detected'. Manual rows use source: 'manual'.
+    const detectedDemo = () => ({
+      meta: {
+        detection: {
+          pixelIds: ['128745690123042'],
+          source: 'Detected on your Shopify storefront',
+        },
+        items: [
+          { id: '128745690123042', name: 'Meta primary', source: 'detected', accessToken: 'EAABwzLixnjYBOZCAzR8kQmH5nP2vL9xYcT4uW6aB1dF3gH7jK0mN8pQ5rS2tV9wXyZ0aBcDeFgHiJkLmNoPqRsTuVwXyZ1a2b3c4d5e6f7g8h9', credentialSource: 'manual' },
+          { id: '998877665544332', name: 'BestCheckout pixel', source: 'manual', accessToken: '', credentialSource: '' },
+        ],
+      },
+      ga4: {
+        detection: {
+          measurementIds: ['G-4N8P7HJ2'],
+          source: 'Detected on your Shopify storefront',
+        },
+        items: [
+          { id: 'G-4N8P7HJ2', name: 'GA4 main', source: 'detected', apiSecret: 'aBc_DeFgHiJkLmNoPqRsTu', credentialSource: 'manual' },
+        ],
+      },
+      gtm: {
+        detection: {
+          containerIds: ['GTM-ABC1234'],
+          source: 'Detected on your Shopify storefront',
+        },
+        items: [
+          { id: 'GTM-ABC1234', name: 'GTM checkout', source: 'detected' },
+        ],
+      },
+      trybe: {
+        detection: {
+          pixelCodes: ['px_6524bd646578'],
+          source: 'Detected from Trybe Shopify install',
+        },
+        items: [
+          { id: 'px_6524bd646578', name: 'Trybe Shopify', source: 'detected', apiKey: 'tb_ord_live_9c4e2a1f8b7d6e0a3c5f', credentialSource: 'manual', snippet: '' },
+        ],
+      },
+    });
+    const pack = (channels) => Object.assign({ events: events.slice() }, channels);
+    const empty = () => pack(emptyChannels());
+    const demo = () => pack(detectedDemo());
+    // Default (Lavender Labs and any store without an override) uses the detected demo.
+    const base = demo();
+    // Per-store packs so store switching does not share one mutable object.
+    // Empty = open-box / no tags yet. Demo = detected IDs are source: 'detected'.
+    window.__AA_STORE_PACKS__ = {
+      empty: empty,
+      demo: demo,
+      emptyChannels: emptyChannels,
+      detectedDemo: detectedDemo,
+      events: events,
+    };
+    return base;
+  })(),
+
+  // Every demo store gets its own Ad data pack. Detected IDs always use source: 'detected'.
+  advertisingAnalyticsByStore: (function () {
+    const packs = window.__AA_STORE_PACKS__;
+    const empty = packs.empty;
+    const demo = packs.demo;
+    return {
+      'Lavender Labs': demo(),
+      'Plover Studio': empty(),
+      'Bramble Market': empty(),
+      'Aura Living': empty(),
+      'Northline Goods': demo(),
+      'Hey June': empty(),
+      'Kiln Coffee': demo(),
+      'Marlow Supply': empty(),
+      'Folast Studio': empty(),
+      'Linden Goods': empty(),
+      'Maple Goods': empty(),
+      'Northstar': empty(),
+      'Atelier': empty(),
+      'Harbor': empty(),
+      'River Remedy': empty(),
+    };
+  })(),
 
   // =========================================================================
   // CURRENCY  (/country/currency/list)  — CurrencyItem shape.
