@@ -749,7 +749,9 @@
       'Enter measurement name': 'Enter measurement name',
       'Enter container name': 'Enter container name',
       'Enable Conversions API to also send completed purchases (Purchase) from the server, so ad blockers are less likely to drop them. Other checkout events stay browser-only.': '启用 Conversions API 后, 还会从服务端补发已完成购买 (Purchase), 降低广告拦截导致的丢失. 其余结账事件仍仅由浏览器发送.',
+      'Paste an Access Token to also send completed purchases (Purchase) from the server. Leave blank to keep browser events only.': '可粘贴 Access Token, 从服务端补发已完成购买 (Purchase); 留空则仅保留浏览器事件.',
       'Enable Measurement Protocol to also send completed purchases (purchase) from the server. Other checkout events stay browser-only.': '启用 Measurement Protocol 后, 还会从服务端补发已完成购买 (purchase). 其余结账事件仍仅由浏览器发送.',
+      'Paste an API Secret to also send completed purchases (purchase) from the server. Leave blank to keep browser events only.': '可粘贴 API Secret, 从服务端补发已完成购买 (purchase); 留空则仅保留浏览器事件.',
       'Yes': '是',
       'No': '否',
       'Delete': '删除',
@@ -7255,7 +7257,7 @@
         nameField: 'Pixel name',
         namePlaceholder: 'Enter pixel name',
         capiTitle: 'Conversions API',
-        capiDesc: 'Enable Conversions API to also send completed purchases (Purchase) from the server, so ad blockers are less likely to drop them. Other checkout events stay browser-only.',
+        capiDesc: 'Paste an Access Token to also send completed purchases (Purchase) from the server. Leave blank to keep browser events only.',
         credentialRequired: 'Please enter an Access Token to enable Conversions API.',
         deleteConfirm: 'Delete this Pixel?',
         deletedToast: 'Pixel deleted.',
@@ -7293,7 +7295,7 @@
         nameField: 'Measurement name',
         namePlaceholder: 'Enter measurement name',
         capiTitle: 'Measurement Protocol',
-        capiDesc: 'Enable Measurement Protocol to also send completed purchases (purchase) from the server. Other checkout events stay browser-only.',
+        capiDesc: 'Paste an API Secret to also send completed purchases (purchase) from the server. Leave blank to keep browser events only.',
         credentialRequired: 'Please enter an API Secret to enable Measurement Protocol.',
         deleteConfirm: 'Delete this Measurement ID?',
         deletedToast: 'Measurement ID deleted.',
@@ -7470,7 +7472,7 @@
       ? '<p>' + esc(localize('No storefront tags were detected. Add a Pixel, Measurement ID, Container, or Trybe Pixel before BestCheckout can send checkout events.')) + '</p><p>' + esc(localize('Event names below stay ready. Nothing is delivered until at least one destination ID is listed.')) + '</p>'
       : '<p>' + esc(localize('Browser events: Detected Meta Pixel, GA4, GTM, and Trybe tags receive the matching browser events in the table.')) + '</p><p>' + esc(localize('Trybe events: Product Viewed, Add to Cart, and Checkout. Product Viewed and Add to Cart stay on the Shopify storefront. BestCheckout maps purchase to Checkout on the thank-you page; begin_checkout has no Trybe mapping. When an Orders API key is saved, completed orders are also submitted via the Orders API.')) + '</p><p>' + esc(localize('Browser events go to every listed ID. Server Purchase uses only the Primary combination with a saved credential.')) + '</p><p>' + esc(localize('Server credentials (Access Token, API Secret, Orders API key) are always entered manually. Detection only finds destination IDs.')) + '</p><p>' + esc(localize('Server Purchase: After you manually save a Meta access token, GA4 API secret, or Trybe Orders API key, BestCheckout also sends completed purchases from the server; other checkout events stay browser-only. Within each destination, browser and server copies of the same order are counted once. Credentials are never auto-detected.')) + '</p>';
     const styles =
-      '.aa-page{display:grid;gap:16px;max-width:1080px}.aa-page-head{margin-bottom:16px}.aa-page-sub{margin:2px 0 0;font-size:13px;line-height:1.5}.aa-page-sub a{color:var(--brand);font-weight:600;text-decoration:none}.aa-page-sub a:hover{text-decoration:underline}.aa-config-stack{display:grid;gap:14px}.aa-tool-card{overflow:hidden;border:1px solid var(--hair);border-radius:12px;background:#fff}.aa-tool-card>header{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;padding:17px 18px 14px;border-bottom:1px solid #eef1f4}.aa-tool-actions{display:flex;align-items:center;gap:10px;flex:none;justify-self:end}.aa-tool-actions .btn{height:28px;padding:0 12px;font-size:12px}.aa-tool-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:10px}.aa-tool-icon.meta{color:#1466d9;background:#eaf2ff}.aa-tool-icon.ga4{color:#d97706;background:#fff4df}.aa-tool-icon.gtm{color:#246fdb;background:#edf5ff}.aa-tool-icon.trybe{color:#0f766e;background:#e6f7f4}.aa-tool-card h2{margin:0;color:var(--ink);font-size:16px;line-height:1.35}.aa-tool-card header p{margin:4px 0 0;color:var(--ink-muted);font-size:12px;line-height:1.5}.aa-status{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;color:#6b7280;background:#f4f5f7;font-size:11px;font-weight:700;white-space:nowrap}.aa-status i{width:6px;height:6px;border-radius:50%;background:#8a94a6}.aa-status.active{color:#167447;background:#e6f6ec}.aa-status.active i{background:#1a9b56}.aa-status.detected{color:#185e9d;background:#eaf4ff}.aa-status.detected i{background:#3585d6}.aa-status.attention{color:#aa5410;background:#fff0df}.aa-status.attention i{background:#d97706}.aa-pixel-table-wrap{border-top:1px solid var(--hair)}.aa-pixel-table{width:100%;table-layout:fixed;font-size:13.5px}.aa-pixel-table thead th,.aa-pixel-table tbody td{padding:12px 16px;vertical-align:middle;white-space:nowrap}.aa-pixel-table thead th{background:#fff;text-align:left;font-weight:600;color:var(--ink)}.aa-pixel-table tbody td{color:var(--ink-body)}.aa-pixel-table tbody tr{cursor:default}.aa-pixel-table th:nth-child(1),.aa-pixel-table td:nth-child(1){width:160px}.aa-pixel-table th:nth-child(2),.aa-pixel-table td:nth-child(2){width:130px}.aa-pixel-table .aa-action-cell{width:110px}.aa-pixel-table--cred th:nth-child(3),.aa-pixel-table--cred td:nth-child(3){width:150px}.aa-pixel-table--cred .aa-cred-cell{width:auto;max-width:0}.aa-pixel-table:not(.aa-pixel-table--cred) th:nth-child(3),.aa-pixel-table:not(.aa-pixel-table--cred) td:nth-child(3){width:auto;max-width:0}.aa-pixel-table .aa-cred-value{display:block;overflow:hidden;min-width:0;color:var(--ink-body);font:13.5px/1.35 ui-monospace,Menlo,Consolas,monospace;text-overflow:ellipsis;white-space:nowrap;cursor:default}.aa-pixel-table .sp-icon-btn{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:7px;border:0;background:transparent;color:var(--ink-muted);cursor:pointer}.aa-pixel-table .sp-icon-btn:hover{background:var(--panel);color:var(--ink)}.aa-pixel-table .sp-icon-btn.danger:hover{color:var(--err)}.aa-event-coverage{overflow:hidden;border:1px solid var(--hair);border-radius:12px;background:#fff}.aa-event-coverage-head{display:grid;gap:3px;padding:16px 18px}.aa-event-coverage-head strong{color:var(--ink);font-size:14px}.aa-event-coverage-head small{color:var(--ink-muted);font-size:12px;line-height:1.45}.aa-event-note{display:flex;gap:10px;margin:0 18px 14px;padding:10px 11px;border:1px solid #dbe8fb;border-radius:8px;color:#365675;background:#f7faff;font-size:12px;line-height:1.5}.aa-event-note svg{flex:none;margin-top:1px}.aa-event-note-copy{display:grid;gap:5px;min-width:0}.aa-event-note-copy p{margin:0}.aa-event-table{width:100%;border-collapse:collapse;border-top:1px solid #edf0f3}.aa-event-table th,.aa-event-table td{padding:10px 16px;border-bottom:1px solid #edf0f3;color:var(--ink-body);font-size:12px;text-align:left;vertical-align:top}.aa-event-table th{color:var(--ink-muted);background:#fafbfc;font-size:11px;font-weight:650}.aa-event-table td:first-child{display:grid;gap:4px}.aa-event-table code{width:max-content;max-width:100%;overflow:hidden;padding:2px 4px;border-radius:4px;color:#3e5774;background:#eff3f7;font:11px/1.25 ui-monospace,Menlo,Consolas,monospace;text-overflow:ellipsis;white-space:nowrap}.aa-token-field{display:grid;gap:7px;margin-top:14px;color:var(--ink);font-size:12px;font-weight:650}.aa-token-field .input{width:100%;height:38px;font-weight:400}.aa-disconnect{border:0;background:transparent;color:var(--err);font:inherit;font-size:12px;font-weight:650;cursor:pointer}.aa-token-field .input::placeholder{font-weight:400}.aa-modal-list{display:grid;gap:9px;margin:4px 0}.aa-modal-list>div{display:flex;justify-content:space-between;gap:16px;padding-bottom:9px;border-bottom:1px solid #edf0f3;color:var(--ink-muted);font-size:12px}.aa-modal-list>div:last-child{border-bottom:0}.aa-modal-list b{color:var(--ink);font-weight:600;text-align:right}.aa-modal-note{margin:14px 0 0;padding:10px 11px;border:1px solid #dbe8fb;border-radius:8px;background:#f7faff;color:#365675;font-size:12px;line-height:1.5}@media(max-width:700px){.aa-tool-card>header{grid-template-columns:40px minmax(0,1fr)}.aa-tool-card>header .aa-tool-actions{grid-column:2;justify-self:start;flex-wrap:wrap}.aa-event-table th,.aa-event-table td{padding:9px 11px}.aa-event-table th:nth-child(2),.aa-event-table td:nth-child(2){display:none}}';
+      '.aa-page{display:grid;gap:12px;max-width:1080px}.aa-page-head{margin:0}.aa-page-sub{margin:2px 0 0;font-size:13px;line-height:1.5}.aa-page-sub a{color:var(--brand);font-weight:600;text-decoration:none}.aa-page-sub a:hover{text-decoration:underline}.aa-config-stack{display:grid;gap:14px}.aa-tool-card{overflow:hidden;border:1px solid var(--hair);border-radius:12px;background:#fff}.aa-tool-card>header{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;padding:17px 18px 14px;border-bottom:1px solid #eef1f4}.aa-tool-actions{display:flex;align-items:center;gap:10px;flex:none;justify-self:end}.aa-tool-actions .btn{height:28px;padding:0 12px;font-size:12px}.aa-tool-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:10px}.aa-tool-icon.meta{color:#1466d9;background:#eaf2ff}.aa-tool-icon.ga4{color:#d97706;background:#fff4df}.aa-tool-icon.gtm{color:#246fdb;background:#edf5ff}.aa-tool-icon.trybe{color:#0f766e;background:#e6f7f4}.aa-tool-card h2{margin:0;color:var(--ink);font-size:16px;line-height:1.35}.aa-tool-card header p{margin:4px 0 0;color:var(--ink-muted);font-size:12px;line-height:1.5}.aa-status{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;color:#6b7280;background:#f4f5f7;font-size:11px;font-weight:700;white-space:nowrap}.aa-status i{width:6px;height:6px;border-radius:50%;background:#8a94a6}.aa-status.active{color:#167447;background:#e6f6ec}.aa-status.active i{background:#1a9b56}.aa-status.detected{color:#185e9d;background:#eaf4ff}.aa-status.detected i{background:#3585d6}.aa-status.attention{color:#aa5410;background:#fff0df}.aa-status.attention i{background:#d97706}.aa-pixel-table-wrap{border-top:1px solid var(--hair)}.aa-pixel-table{width:100%;table-layout:fixed;font-size:13.5px}.aa-pixel-table thead th,.aa-pixel-table tbody td{padding:12px 16px;vertical-align:middle;white-space:nowrap}.aa-pixel-table thead th{background:#fff;text-align:left;font-weight:600;color:var(--ink)}.aa-pixel-table tbody td{color:var(--ink-body)}.aa-pixel-table tbody tr{cursor:default}.aa-pixel-table th:nth-child(1),.aa-pixel-table td:nth-child(1){width:160px}.aa-pixel-table th:nth-child(2),.aa-pixel-table td:nth-child(2){width:130px}.aa-pixel-table .aa-action-cell{width:110px}.aa-pixel-table--cred th:nth-child(3),.aa-pixel-table--cred td:nth-child(3){width:150px}.aa-pixel-table--cred .aa-cred-cell{width:auto;max-width:0}.aa-pixel-table:not(.aa-pixel-table--cred) th:nth-child(3),.aa-pixel-table:not(.aa-pixel-table--cred) td:nth-child(3){width:auto;max-width:0}.aa-pixel-table .aa-cred-value{display:block;overflow:hidden;min-width:0;color:var(--ink-body);font:13.5px/1.35 ui-monospace,Menlo,Consolas,monospace;text-overflow:ellipsis;white-space:nowrap;cursor:default}.aa-pixel-table .sp-icon-btn{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:7px;border:0;background:transparent;color:var(--ink-muted);cursor:pointer}.aa-pixel-table .sp-icon-btn:hover{background:var(--panel);color:var(--ink)}.aa-pixel-table .sp-icon-btn.danger:hover{color:var(--err)}.aa-event-coverage{overflow:hidden;border:1px solid var(--hair);border-radius:12px;background:#fff}.aa-event-coverage-head{display:grid;gap:3px;padding:16px 18px}.aa-event-coverage-head strong{color:var(--ink);font-size:14px}.aa-event-coverage-head small{color:var(--ink-muted);font-size:12px;line-height:1.45}.aa-event-note{display:flex;gap:10px;margin:0 18px 14px;padding:10px 11px;border:1px solid #dbe8fb;border-radius:8px;color:#365675;background:#f7faff;font-size:12px;line-height:1.5}.aa-event-note svg{flex:none;margin-top:1px}.aa-event-note-copy{display:grid;gap:5px;min-width:0}.aa-event-note-copy p{margin:0}.aa-event-table{width:100%;border-collapse:collapse;border-top:1px solid #edf0f3}.aa-event-table th,.aa-event-table td{padding:10px 16px;border-bottom:1px solid #edf0f3;color:var(--ink-body);font-size:12px;text-align:left;vertical-align:top}.aa-event-table th{color:var(--ink-muted);background:#fafbfc;font-size:11px;font-weight:650}.aa-event-table td:first-child{display:grid;gap:4px}.aa-event-table code{width:max-content;max-width:100%;overflow:hidden;padding:2px 4px;border-radius:4px;color:#3e5774;background:#eff3f7;font:11px/1.25 ui-monospace,Menlo,Consolas,monospace;text-overflow:ellipsis;white-space:nowrap}.aa-token-field{display:grid;gap:7px;margin-top:14px;color:var(--ink);font-size:12px;font-weight:650}.aa-token-field .input{width:100%;height:38px;font-weight:400}.aa-disconnect{border:0;background:transparent;color:var(--err);font:inherit;font-size:12px;font-weight:650;cursor:pointer}.aa-token-field .input::placeholder{font-weight:400}.aa-modal-list{display:grid;gap:9px;margin:4px 0}.aa-modal-list>div{display:flex;justify-content:space-between;gap:16px;padding-bottom:9px;border-bottom:1px solid #edf0f3;color:var(--ink-muted);font-size:12px}.aa-modal-list>div:last-child{border-bottom:0}.aa-modal-list b{color:var(--ink);font-weight:600;text-align:right}.aa-modal-note{margin:14px 0 0;padding:10px 11px;border:1px solid #dbe8fb;border-radius:8px;background:#f7faff;color:#365675;font-size:12px;line-height:1.5}@media(max-width:700px){.aa-tool-card>header{grid-template-columns:40px minmax(0,1fr)}.aa-tool-card>header .aa-tool-actions{grid-column:2;justify-self:start;flex-wrap:wrap}.aa-event-table th,.aa-event-table td{padding:9px 11px}.aa-event-table th:nth-child(2),.aa-event-table td:nth-child(2){display:none}}';
     paint(
       '<style>' + styles + '</style>' +
       '<div class="aa-page">' +
@@ -7501,17 +7503,11 @@
         const currentName = isEdit ? String(existing.name || '') : '';
         const currentSnippet = isEdit ? String(existing.snippet || '') : '';
         const currentCred = isEdit ? String(existing.apiKey || '') : '';
-        const ordersOn = Boolean(currentCred.trim());
         const ordersBlock =
           '<div class="aa-token-field"><span>' + esc(localize(def.capiTitle)) + '</span>' +
           '<p class="muted" style="margin:0 0 10px;font-size:12.5px;line-height:1.55;font-weight:400">' + esc(localize(def.capiDesc)) + '</p>' +
-          '<div class="flex items-center gap-4" data-aa-capi-group style="font-weight:400">' +
-            '<label class="set-radio' + (ordersOn ? '' : ' on') + '" data-aa-capi="0"><span class="proc-radio">' + (ordersOn ? '' : '<span class="proc-dot"></span>') + '</span>' + esc(localize('No')) + '</label>' +
-            '<label class="set-radio' + (ordersOn ? ' on' : '') + '" data-aa-capi="1"><span class="proc-radio">' + (ordersOn ? '<span class="proc-dot"></span>' : '') + '</span>' + esc(localize('Yes')) + '</label>' +
-          '</div>' +
-          '<div data-aa-capi-token-wrap style="margin-top:12px;' + (ordersOn ? '' : 'display:none') + '">' +
-            '<input class="input" type="password" autocomplete="off" spellcheck="false" data-aa-credential placeholder="' + esc(def.fieldPlaceholder) + '" value="' + esc(currentCred) + '"/>' +
-          '</div></div>';
+          '<input class="input" type="password" autocomplete="off" spellcheck="false" data-aa-credential placeholder="' + esc(def.fieldPlaceholder) + '" value="' + esc(currentCred) + '"/>' +
+          '</div>';
         const body = (def.formHint
           ? '<p class="muted" style="margin:0 0 14px;font-size:12.5px;line-height:1.55">' + esc(localize(def.formHint)) + '</p>'
           : '') +
@@ -7528,18 +7524,14 @@
           const nextId = isDetected
             ? currentId
             : (parseTrybePixelCode(snippet) || '');
-          const enabled = Boolean(m.querySelector('[data-aa-capi="1"].on'));
           const credential = String((m.querySelector('[data-aa-credential]') || {}).value || '').trim();
+          const enabled = Boolean(credential);
           if (!isDetected && !snippet) {
             toast(localize(def.snippetRequired), 'warning');
             return;
           }
           if (!nextId) {
             toast(localize(def.pixelRequired), 'warning');
-            return;
-          }
-          if (enabled && !credential) {
-            toast(localize(def.credentialRequired), 'warning');
             return;
           }
           const duplicate = (bucket.items || []).some((other) => String(other.id) === nextId && (!isEdit || String(other.id) !== currentId));
@@ -7591,7 +7583,6 @@
           content: localize(def.conflictCopy),
         });
         const validateTrybeCredentialBlur = (m) => {
-          if (!m.querySelector('[data-aa-capi="1"].on')) return;
           const credential = String((m.querySelector('[data-aa-credential]') || {}).value || '').trim();
           if (!credential) return;
           const nextId = isDetected
@@ -7612,24 +7603,6 @@
           },
           onOk: (m, close) => saveTrybe(m, close),
         });
-        const group = dialog.m.querySelector('[data-aa-capi-group]');
-        const wrap = dialog.m.querySelector('[data-aa-capi-token-wrap]');
-        if (group && wrap) {
-          group.querySelectorAll('[data-aa-capi]').forEach((el) => {
-            el.onclick = () => {
-              group.querySelectorAll('[data-aa-capi]').forEach((node) => {
-                node.classList.remove('on');
-                const dot = node.querySelector('.proc-radio');
-                if (dot) dot.innerHTML = '';
-              });
-              el.classList.add('on');
-              const dot = el.querySelector('.proc-radio');
-              if (dot) dot.innerHTML = '<span class="proc-dot"></span>';
-              wrap.style.display = el.getAttribute('data-aa-capi') === '1' ? '' : 'none';
-              if (el.getAttribute('data-aa-capi') === '1') validateTrybeCredentialBlur(dialog.m);
-            };
-          });
-        }
         const trybeCred = dialog.m.querySelector('[data-aa-credential]');
         if (trybeCred) trybeCred.addEventListener('blur', () => validateTrybeCredentialBlur(dialog.m));
         const focus = dialog.m.querySelector(isDetected || isEdit ? '[data-aa-name]' : '[data-aa-snippet]');
@@ -7639,17 +7612,11 @@
       const currentId = isEdit ? String(existing.id || '') : '';
       const currentName = isEdit ? String(existing.name || '') : '';
       const currentCred = def.credentialKey && isEdit ? String(existing[def.credentialKey] || '') : '';
-      const capiOn = Boolean(def.credentialKey && currentCred.trim());
       const capiBlock = def.credentialKey
         ? '<div class="aa-token-field"><span>' + esc(localize(def.capiTitle)) + '</span>' +
           '<p class="muted" style="margin:0 0 10px;font-size:12.5px;line-height:1.55;font-weight:400">' + esc(localize(def.capiDesc)) + '</p>' +
-          '<div class="flex items-center gap-4" data-aa-capi-group style="font-weight:400">' +
-            '<label class="set-radio' + (capiOn ? '' : ' on') + '" data-aa-capi="0"><span class="proc-radio">' + (capiOn ? '' : '<span class="proc-dot"></span>') + '</span>' + esc(localize('No')) + '</label>' +
-            '<label class="set-radio' + (capiOn ? ' on' : '') + '" data-aa-capi="1"><span class="proc-radio">' + (capiOn ? '<span class="proc-dot"></span>' : '') + '</span>' + esc(localize('Yes')) + '</label>' +
-          '</div>' +
-          '<div data-aa-capi-token-wrap style="margin-top:12px;' + (capiOn ? '' : 'display:none') + '">' +
-            '<input class="input" type="' + (def.secretInput ? 'password' : 'text') + '" autocomplete="off" spellcheck="false" data-aa-credential placeholder="' + esc(def.fieldPlaceholder) + '" value="' + esc(currentCred) + '"/>' +
-          '</div></div>'
+          '<input class="input" type="' + (def.secretInput ? 'password' : 'text') + '" autocomplete="off" spellcheck="false" data-aa-credential placeholder="' + esc(def.fieldPlaceholder) + '" value="' + esc(currentCred) + '"/>' +
+          '</div>'
         : '';
       const hasPrimaryConflict = (nextId) => {
         if (!def.credentialKey) return false;
@@ -7662,7 +7629,6 @@
       });
       const validateCredentialBlur = (m) => {
         if (!def.credentialKey) return;
-        if (!m.querySelector('[data-aa-capi="1"].on')) return;
         const credential = String((m.querySelector('[data-aa-credential]') || {}).value || '').trim();
         if (!credential) return;
         const nextId = String((m.querySelector('[data-aa-id]') || {}).value || '').trim();
@@ -7671,18 +7637,12 @@
       const saveItem = (m, close) => {
         const name = String((m.querySelector('[data-aa-name]') || {}).value || '').trim();
         const nextId = String((m.querySelector('[data-aa-id]') || {}).value || '').trim();
-        const enabled = def.credentialKey
-          ? Boolean(m.querySelector('[data-aa-capi="1"].on'))
-          : false;
         const credential = def.credentialKey
           ? String((m.querySelector('[data-aa-credential]') || {}).value || '').trim()
           : '';
+        const enabled = Boolean(def.credentialKey && credential);
         if (!nextId) {
           toast(localize(def.idRequired), 'warning');
-          return;
-        }
-        if (enabled && !credential) {
-          toast(localize(def.credentialRequired), 'warning');
           return;
         }
         const duplicate = (bucket.items || []).some((other) => String(other.id) === nextId && (!isEdit || String(other.id) !== currentId));
@@ -7743,24 +7703,6 @@
         },
         onOk: (m, close) => saveItem(m, close),
       });
-      const group = dialog.m.querySelector('[data-aa-capi-group]');
-      const wrap = dialog.m.querySelector('[data-aa-capi-token-wrap]');
-      if (group && wrap) {
-        group.querySelectorAll('[data-aa-capi]').forEach((el) => {
-          el.onclick = () => {
-            group.querySelectorAll('[data-aa-capi]').forEach((node) => {
-              node.classList.remove('on');
-              const dot = node.querySelector('.proc-radio');
-              if (dot) dot.innerHTML = '';
-            });
-            el.classList.add('on');
-            const dot = el.querySelector('.proc-radio');
-            if (dot) dot.innerHTML = '<span class="proc-dot"></span>';
-            wrap.style.display = el.getAttribute('data-aa-capi') === '1' ? '' : 'none';
-            if (el.getAttribute('data-aa-capi') === '1') validateCredentialBlur(dialog.m);
-          };
-        });
-      }
       const credInput = dialog.m.querySelector('[data-aa-credential]');
       if (credInput) credInput.addEventListener('blur', () => validateCredentialBlur(dialog.m));
       const focus = dialog.m.querySelector(isEdit ? '[data-aa-name]' : '[data-aa-id]');
