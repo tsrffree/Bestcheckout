@@ -247,33 +247,64 @@ window.DATA_SETTINGS = {
         ],
       },
     });
+    // Manual-only: items exist but card status stays Not detected (manual never counts as detected).
+    const manualOnlyDemo = () => ({
+      meta: {
+        detection: { pixelIds: [], source: 'Detected on your Shopify storefront' },
+        items: [
+          { id: '998877665544332', name: 'BestCheckout pixel', source: 'manual', accessToken: '', credentialSource: '' },
+        ],
+      },
+      ga4: {
+        detection: { measurementIds: [], source: 'Detected on your Shopify storefront' },
+        items: [
+          { id: 'G-MANUAL01', name: 'GA4 manual', source: 'manual', apiSecret: '', credentialSource: '' },
+        ],
+      },
+      gtm: {
+        detection: { containerIds: [], source: 'Detected on your Shopify storefront' },
+        items: [
+          { id: 'GTM-MANUAL1', name: 'GTM manual', source: 'manual' },
+        ],
+      },
+      trybe: {
+        detection: { pixelCodes: [], source: 'Detected from Trybe Shopify install' },
+        items: [
+          { id: 'px_manual_trybe01', name: 'Trybe custom', source: 'manual', apiKey: '', credentialSource: '', snippet: 'px_manual_trybe01' },
+        ],
+      },
+    });
     const pack = (channels) => Object.assign({ events: events.slice() }, channels);
     const empty = () => pack(emptyChannels());
     const demo = () => pack(detectedDemo());
+    const manualOnly = () => pack(manualOnlyDemo());
     // Default (Lavender Labs and any store without an override) uses the detected demo.
     const base = demo();
     // Per-store packs so store switching does not share one mutable object.
-    // Empty = open-box / no tags yet. Demo = detected IDs are source: 'detected'.
+    // Empty = open-box. Demo = system-detected rows. ManualOnly = manual rows only (status Not detected).
     window.__AA_STORE_PACKS__ = {
       empty: empty,
       demo: demo,
+      manualOnly: manualOnly,
       emptyChannels: emptyChannels,
       detectedDemo: detectedDemo,
+      manualOnlyDemo: manualOnlyDemo,
       events: events,
     };
     return base;
   })(),
 
-  // Every demo store gets its own Ad data pack. Detected IDs always use source: 'detected'.
+  // Every demo store gets its own Ad data pack. Detected = source: 'detected' only.
   advertisingAnalyticsByStore: (function () {
     const packs = window.__AA_STORE_PACKS__;
     const empty = packs.empty;
     const demo = packs.demo;
+    const manualOnly = packs.manualOnly;
     return {
       'Lavender Labs': demo(),
       'Plover Studio': empty(),
       'Bramble Market': empty(),
-      'Aura Living': empty(),
+      'Aura Living': manualOnly(),
       'Northline Goods': demo(),
       'Hey June': empty(),
       'Kiln Coffee': demo(),

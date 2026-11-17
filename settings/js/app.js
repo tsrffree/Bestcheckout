@@ -7277,6 +7277,7 @@
         deleteConfirmCopy: 'This Pixel will be removed from the list. Checkout events will no longer be sent to this ID.',
         deletedToast: 'Pixel deleted.',
         credentialKey: 'accessToken',
+        detectionKey: 'pixelIds',
         credentialConfigured: 'Access token configured',
         credentialMissing: 'CAPI not configured',
         addCredential: 'Add Access Token',
@@ -7317,6 +7318,7 @@
         deleteConfirmCopy: 'This Measurement ID will be removed from the list. Checkout events will no longer be sent to this ID.',
         deletedToast: 'Measurement ID deleted.',
         credentialKey: 'apiSecret',
+        detectionKey: 'measurementIds',
         credentialConfigured: 'API secret configured',
         credentialMissing: 'API secret not configured',
         addCredential: 'Add API Secret',
@@ -7354,6 +7356,7 @@
         nameField: 'Container name',
         namePlaceholder: 'Enter container name',
         credentialKey: '',
+        detectionKey: 'containerIds',
         deleteConfirm: 'Delete this Container?',
         deleteConfirmCopy: 'This Container will be removed from the list. Checkout events will no longer be sent to this ID.',
         deletedToast: 'Container deleted.',
@@ -7394,6 +7397,7 @@
         deleteConfirmCopy: 'This Trybe Pixel will be removed from the list. Checkout events will no longer be sent to this Pixel.',
         deletedToast: 'Trybe Pixel deleted.',
         credentialKey: 'apiKey',
+        detectionKey: 'pixelCodes',
         credentialConfigured: 'Orders API configured',
         credentialMissing: 'Orders API not configured',
         fieldLabel: 'Orders API key',
@@ -7421,10 +7425,39 @@
       if (raw.length < 8) return { text: '····', title: localize('Credential saved') };
       return { text: raw.slice(0, 4) + '····' + raw.slice(-4), title: localize('Credential saved') };
     };
+    const aaErrSlot = (errKey) => errKey
+      ? '<div class="aa-field-err" data-aa-err="' + esc(errKey) + '"></div>'
+      : '';
     const field = (label, attr, value, placeholder, opts) =>
-      '<label class="aa-token-field"><span>' + esc(localize(label)) + (opts && opts.required ? ' <span style="color:var(--err)">*</span>' : '') + (opts && opts.optional ? ' <b class="muted" style="font-weight:500">(' + esc(localize('Optional')) + ')</b>' : '') + '</span><input class="input" type="' + ((opts && opts.secret) ? 'password' : 'text') + '" autocomplete="off" spellcheck="false" ' + ((opts && opts.readOnly) ? 'readonly ' : '') + attr + ' placeholder="' + esc(placeholder) + '" value="' + esc(value || '') + '" /></label>';
+      '<label class="aa-token-field"><span>' + esc(localize(label)) + (opts && opts.required ? ' <span style="color:var(--err)">*</span>' : '') + (opts && opts.optional ? ' <b class="muted" style="font-weight:500">(' + esc(localize('Optional')) + ')</b>' : '') + '</span><input class="input" type="' + ((opts && opts.secret) ? 'password' : 'text') + '" autocomplete="off" spellcheck="false" ' + ((opts && opts.readOnly) ? 'readonly ' : '') + attr + ' placeholder="' + esc(placeholder) + '" value="' + esc(value || '') + '" />' + aaErrSlot(opts && opts.errKey) + '</label>';
     const areaField = (label, attr, value, placeholder, opts) =>
-      '<label class="aa-token-field"><span>' + esc(localize(label)) + (opts && opts.required ? ' <span style="color:var(--err)">*</span>' : '') + '</span><textarea class="input" ' + attr + ' placeholder="' + esc(placeholder) + '" style="min-height:120px;height:auto;padding:8px 11px;resize:vertical;width:100%;box-sizing:border-box;font-weight:400;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px">' + esc(value || '') + '</textarea></label>';
+      '<label class="aa-token-field"><span>' + esc(localize(label)) + (opts && opts.required ? ' <span style="color:var(--err)">*</span>' : '') + '</span><textarea class="input" ' + attr + ' placeholder="' + esc(placeholder) + '" style="min-height:120px;height:auto;padding:8px 11px;resize:vertical;width:100%;box-sizing:border-box;font-weight:400;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px">' + esc(value || '') + '</textarea>' + aaErrSlot(opts && opts.errKey) + '</label>';
+    const aaInputForErr = (m, key) => {
+      const sel = key === 'id' ? '[data-aa-id]'
+        : key === 'snippet' ? '[data-aa-snippet]'
+          : key === 'name' ? '[data-aa-name]'
+            : key === 'credential' ? '[data-aa-credential]'
+              : '';
+      return sel ? m.querySelector(sel) : null;
+    };
+    const setAaErr = (m, key, msg) => {
+      const slot = m.querySelector('[data-aa-err="' + key + '"]');
+      if (slot) slot.textContent = msg || '';
+      const input = aaInputForErr(m, key);
+      if (input) {
+        if (msg) input.classList.add('err');
+        else input.classList.remove('err');
+      }
+    };
+    const clearAaErrs = (m) => {
+      m.querySelectorAll('[data-aa-err]').forEach((slot) => { slot.textContent = ''; });
+      m.querySelectorAll('.aa-token-field .input.err').forEach((input) => input.classList.remove('err'));
+    };
+    const wireAaErrClear = (m, key) => {
+      const input = aaInputForErr(m, key);
+      if (!input || input.readOnly) return;
+      input.addEventListener('input', () => setAaErr(m, key, ''));
+    };
     const hasManualCredential = (item, def) => Boolean(
       def.credentialKey &&
       String(item[def.credentialKey] || '').trim() &&
@@ -7493,13 +7526,17 @@
         '<th class="aa-action-cell">' + esc(localize('Action')) + '</th>' +
       '</tr></thead><tbody>' + rows + '</tbody></table></div>';
     };
+    // Detected = storefront / Shopify sync only. Manual IDs and pasted tokens never flip this status.
+    const channelHasDetected = (channel) => {
+      const def = channelDefs[channel];
+      const bucket = ensureChannel(channel);
+      const detectedIds = values(bucket.detection && bucket.detection[def.detectionKey]);
+      return detectedIds.length > 0 || (bucket.items || []).some((item) => item.source === 'detected');
+    };
     const toolCard = (channel) => {
       const def = channelDefs[channel];
       const bucket = ensureChannel(channel);
-      const items = bucket.items || [];
-      const detectedPresent = def.customCode
-        ? values(bucket.detection && bucket.detection.pixelCodes).length > 0 || items.some((item) => item.source === 'detected')
-        : items.length > 0;
+      const detectedPresent = channelHasDetected(channel);
       const detectTone = detectedPresent ? 'detected' : 'neutral';
       const detectLabel = detectedPresent ? 'Detected' : 'Not detected';
       const addDisabled = canAddItem(channel, def) ? '' : ' disabled';
@@ -7511,12 +7548,12 @@
     const eventRows = (a.events || []).map((event) =>
       '<tr><td><code>' + esc(event.id) + '</code><span>' + esc(event.label) + '</span></td><td>' + esc(event.meta) + '</td><td><code>' + esc(event.ga4) + '</code></td><td><code>' + esc(event.gtm) + '</code></td><td>' + esc(event.trybe || '—') + '</td></tr>'
     ).join('');
-    const undetected = !(meta.items.length || ga4.items.length || gtm.items.length || trybe.items.length);
-    const eventNoteCopy = undetected
+    const hasDestination = Boolean(meta.items.length || ga4.items.length || gtm.items.length || trybe.items.length);
+    const eventNoteCopy = !hasDestination
       ? '<p>' + esc(localize('No storefront tags were detected. Add a Pixel, Measurement ID, Container, or Trybe Pixel before BestCheckout can send checkout events.')) + '</p><p>' + esc(localize('Event names below stay ready. Nothing is delivered until at least one destination ID is listed.')) + '</p>'
       : '<p>' + esc(localize('Browser events: Detected Meta Pixel, GA4, GTM, and Trybe tags receive the matching browser events in the table.')) + '</p><p>' + esc(localize('Trybe events: Product Viewed, Add to Cart, and Checkout. Product Viewed and Add to Cart stay on the Shopify storefront. BestCheckout maps purchase to Checkout on the thank-you page; begin_checkout has no Trybe mapping. When an Orders API key is saved, completed orders are also submitted via the Orders API.')) + '</p><p>' + esc(localize('Browser events go to every listed ID. Server Purchase uses only the Primary combination with a saved credential.')) + '</p><p>' + esc(localize('Server credentials (Access Token, API Secret, Orders API key) are always entered manually. Detection only finds destination IDs.')) + '</p><p>' + esc(localize('Server Purchase: After you manually save a Meta access token, GA4 API secret, or Trybe Orders API key, BestCheckout also sends completed purchases from the server; other checkout events stay browser-only. Within each destination, browser and server copies of the same order are counted once. Credentials are never auto-detected.')) + '</p>';
     const styles =
-      '.aa-page{display:grid;gap:12px;max-width:1080px}.aa-page-head{margin:0}.aa-page-sub{margin:2px 0 0;font-size:13px;line-height:1.5}.aa-page-sub a{color:var(--brand);font-weight:600;text-decoration:none}.aa-page-sub a:hover{text-decoration:underline}.aa-config-stack{display:grid;gap:14px}.aa-tool-card{overflow:hidden;border:1px solid var(--hair);border-radius:12px;background:#fff}.aa-tool-card>header{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;padding:17px 18px 14px;border-bottom:1px solid #eef1f4}.aa-tool-actions{display:flex;align-items:center;gap:10px;flex:none;justify-self:end}.aa-tool-actions .btn{height:32px;padding:0 14px;font-size:13px}.aa-tool-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:10px}.aa-tool-icon.meta{color:#1466d9;background:#eaf2ff}.aa-tool-icon.ga4{color:#d97706;background:#fff4df}.aa-tool-icon.gtm{color:#246fdb;background:#edf5ff}.aa-tool-icon.trybe{color:#0f766e;background:#e6f7f4}.aa-tool-card h2{margin:0;color:var(--ink);font-size:16px;line-height:1.35}.aa-tool-card header p{margin:4px 0 0;color:var(--ink-muted);font-size:12px;line-height:1.5}.aa-tool-actions .aa-detect-status{flex:none}.aa-detect-status{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:650;line-height:1;white-space:nowrap;background:#f2f4f7;color:var(--ink-muted)}.aa-detect-status.ok{background:#e9f8ef;color:#167443}.aa-detect-dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}.aa-pixel-table-wrap{border-top:1px solid var(--hair)}.aa-pixel-table{width:100%;table-layout:fixed;font-size:13.5px}.aa-pixel-table thead th,.aa-pixel-table tbody td{padding:12px 16px;vertical-align:middle;white-space:nowrap}.aa-pixel-table thead th{background:#fff;text-align:left;font-weight:600;color:var(--ink)}.aa-pixel-table tbody td{color:var(--ink-body)}.aa-pixel-table tbody tr{cursor:default}.aa-pixel-table th:nth-child(1),.aa-pixel-table td:nth-child(1){width:160px}.aa-pixel-table th:nth-child(2),.aa-pixel-table td:nth-child(2){width:130px}.aa-pixel-table .aa-action-cell{width:110px}.aa-pixel-table--cred th:nth-child(3),.aa-pixel-table--cred td:nth-child(3){width:150px}.aa-pixel-table--cred .aa-cred-cell{width:auto;max-width:0}.aa-pixel-table:not(.aa-pixel-table--cred) th:nth-child(3),.aa-pixel-table:not(.aa-pixel-table--cred) td:nth-child(3){width:auto;max-width:0}.aa-pixel-table .aa-cred-value{display:block;overflow:hidden;min-width:0;color:var(--ink-body);font:13.5px/1.35 ui-monospace,Menlo,Consolas,monospace;text-overflow:ellipsis;white-space:nowrap;cursor:default}.aa-pixel-table .sp-icon-btn{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:7px;border:0;background:transparent;color:var(--ink-muted);cursor:pointer}.aa-pixel-table .sp-icon-btn:hover{background:var(--panel);color:var(--ink)}.aa-pixel-table .sp-icon-btn.danger:hover{color:var(--err)}.aa-event-coverage{overflow:hidden;border:1px solid var(--hair);border-radius:12px;background:#fff}.aa-event-coverage-head{display:grid;gap:3px;padding:16px 18px}.aa-event-coverage-head strong{color:var(--ink);font-size:14px}.aa-event-coverage-head small{color:var(--ink-muted);font-size:12px;line-height:1.45}.aa-event-note{display:flex;gap:10px;margin:0 18px 14px;padding:10px 11px;border:1px solid #dbe8fb;border-radius:8px;color:#365675;background:#f7faff;font-size:12px;line-height:1.5}.aa-event-note svg{flex:none;margin-top:1px}.aa-event-note-copy{display:grid;gap:5px;min-width:0}.aa-event-note-copy p{margin:0}.aa-event-table{width:100%;border-collapse:collapse;border-top:1px solid #edf0f3}.aa-event-table th,.aa-event-table td{padding:10px 16px;border-bottom:1px solid #edf0f3;color:var(--ink-body);font-size:12px;text-align:left;vertical-align:top}.aa-event-table th{color:var(--ink-muted);background:#fafbfc;font-size:11px;font-weight:650}.aa-event-table td:first-child{display:grid;gap:4px}.aa-event-table code{width:max-content;max-width:100%;overflow:hidden;padding:2px 4px;border-radius:4px;color:#3e5774;background:#eff3f7;font:11px/1.25 ui-monospace,Menlo,Consolas,monospace;text-overflow:ellipsis;white-space:nowrap}.aa-token-field{display:grid;gap:7px;margin-top:14px;color:var(--ink);font-size:12px;font-weight:650}.aa-token-field .input{width:100%;height:38px;font-weight:400}.aa-disconnect{border:0;background:transparent;color:var(--err);font:inherit;font-size:12px;font-weight:650;cursor:pointer}.aa-token-field .input::placeholder{font-weight:400}.aa-modal-list{display:grid;gap:9px;margin:4px 0}.aa-modal-list>div{display:flex;justify-content:space-between;gap:16px;padding-bottom:9px;border-bottom:1px solid #edf0f3;color:var(--ink-muted);font-size:12px}.aa-modal-list>div:last-child{border-bottom:0}.aa-modal-list b{color:var(--ink);font-weight:600;text-align:right}.aa-modal-note{margin:14px 0 0;padding:10px 11px;border:1px solid #dbe8fb;border-radius:8px;background:#f7faff;color:#365675;font-size:12px;line-height:1.5}@media(max-width:700px){.aa-tool-card>header{grid-template-columns:40px minmax(0,1fr)}.aa-tool-card>header .aa-tool-actions{grid-column:2;justify-self:start;flex-wrap:wrap}.aa-event-table th,.aa-event-table td{padding:9px 11px}.aa-event-table th:nth-child(2),.aa-event-table td:nth-child(2){display:none}}';
+      '.aa-page{display:grid;gap:12px;max-width:1080px}.aa-page-head{margin:0}.aa-page-sub{margin:2px 0 0;font-size:13px;line-height:1.5}.aa-page-sub a{color:var(--brand);font-weight:600;text-decoration:none}.aa-page-sub a:hover{text-decoration:underline}.aa-config-stack{display:grid;gap:14px}.aa-tool-card{overflow:hidden;border:1px solid var(--hair);border-radius:12px;background:#fff}.aa-tool-card>header{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;padding:17px 18px 14px;border-bottom:1px solid #eef1f4}.aa-tool-actions{display:flex;align-items:center;gap:10px;flex:none;justify-self:end}.aa-tool-actions .btn{height:32px;padding:0 14px;font-size:13px}.aa-tool-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:10px}.aa-tool-icon.meta{color:#1466d9;background:#eaf2ff}.aa-tool-icon.ga4{color:#d97706;background:#fff4df}.aa-tool-icon.gtm{color:#246fdb;background:#edf5ff}.aa-tool-icon.trybe{color:#0f766e;background:#e6f7f4}.aa-tool-card h2{margin:0;color:var(--ink);font-size:16px;line-height:1.35}.aa-tool-card header p{margin:4px 0 0;color:var(--ink-muted);font-size:12px;line-height:1.5}.aa-tool-actions .aa-detect-status{flex:none}.aa-detect-status{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:650;line-height:1;white-space:nowrap;background:#f2f4f7;color:var(--ink-muted)}.aa-detect-status.ok{background:#e9f8ef;color:#167443}.aa-detect-dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}.aa-pixel-table-wrap{border-top:1px solid var(--hair)}.aa-pixel-table{width:100%;table-layout:fixed;font-size:13.5px}.aa-pixel-table thead th,.aa-pixel-table tbody td{padding:12px 16px;vertical-align:middle;white-space:nowrap}.aa-pixel-table thead th{background:#fff;text-align:left;font-weight:600;color:var(--ink)}.aa-pixel-table tbody td{color:var(--ink-body)}.aa-pixel-table tbody tr{cursor:default}.aa-pixel-table th:nth-child(1),.aa-pixel-table td:nth-child(1){width:160px}.aa-pixel-table th:nth-child(2),.aa-pixel-table td:nth-child(2){width:130px}.aa-pixel-table .aa-action-cell{width:110px}.aa-pixel-table--cred th:nth-child(3),.aa-pixel-table--cred td:nth-child(3){width:150px}.aa-pixel-table--cred .aa-cred-cell{width:auto;max-width:0}.aa-pixel-table:not(.aa-pixel-table--cred) th:nth-child(3),.aa-pixel-table:not(.aa-pixel-table--cred) td:nth-child(3){width:auto;max-width:0}.aa-pixel-table .aa-cred-value{display:block;overflow:hidden;min-width:0;color:var(--ink-body);font:13.5px/1.35 ui-monospace,Menlo,Consolas,monospace;text-overflow:ellipsis;white-space:nowrap;cursor:default}.aa-pixel-table .sp-icon-btn{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:7px;border:0;background:transparent;color:var(--ink-muted);cursor:pointer}.aa-pixel-table .sp-icon-btn:hover{background:var(--panel);color:var(--ink)}.aa-pixel-table .sp-icon-btn.danger:hover{color:var(--err)}.aa-event-coverage{overflow:hidden;border:1px solid var(--hair);border-radius:12px;background:#fff}.aa-event-coverage-head{display:grid;gap:3px;padding:16px 18px}.aa-event-coverage-head strong{color:var(--ink);font-size:14px}.aa-event-coverage-head small{color:var(--ink-muted);font-size:12px;line-height:1.45}.aa-event-note{display:flex;gap:10px;margin:0 18px 14px;padding:10px 11px;border:1px solid #dbe8fb;border-radius:8px;color:#365675;background:#f7faff;font-size:12px;line-height:1.5}.aa-event-note svg{flex:none;margin-top:1px}.aa-event-note-copy{display:grid;gap:5px;min-width:0}.aa-event-note-copy p{margin:0}.aa-event-table{width:100%;border-collapse:collapse;border-top:1px solid #edf0f3}.aa-event-table th,.aa-event-table td{padding:10px 16px;border-bottom:1px solid #edf0f3;color:var(--ink-body);font-size:12px;text-align:left;vertical-align:top}.aa-event-table th{color:var(--ink-muted);background:#fafbfc;font-size:11px;font-weight:650}.aa-event-table td:first-child{display:grid;gap:4px}.aa-event-table code{width:max-content;max-width:100%;overflow:hidden;padding:2px 4px;border-radius:4px;color:#3e5774;background:#eff3f7;font:11px/1.25 ui-monospace,Menlo,Consolas,monospace;text-overflow:ellipsis;white-space:nowrap}.aa-token-field{display:grid;gap:7px;margin-top:14px;color:var(--ink);font-size:12px;font-weight:650}.aa-token-field .input{width:100%;height:38px;font-weight:400}.aa-token-field .input.err{border-color:var(--err)}.aa-field-err{margin-top:0;color:var(--err);font-size:13px;line-height:1.4;font-weight:400}.aa-field-err:empty{display:none}.aa-disconnect{border:0;background:transparent;color:var(--err);font:inherit;font-size:12px;font-weight:650;cursor:pointer}.aa-token-field .input::placeholder{font-weight:400}.aa-modal-list{display:grid;gap:9px;margin:4px 0}.aa-modal-list>div{display:flex;justify-content:space-between;gap:16px;padding-bottom:9px;border-bottom:1px solid #edf0f3;color:var(--ink-muted);font-size:12px}.aa-modal-list>div:last-child{border-bottom:0}.aa-modal-list b{color:var(--ink);font-weight:600;text-align:right}.aa-modal-note{margin:14px 0 0;padding:10px 11px;border:1px solid #dbe8fb;border-radius:8px;background:#f7faff;color:#365675;font-size:12px;line-height:1.5}@media(max-width:700px){.aa-tool-card>header{grid-template-columns:40px minmax(0,1fr)}.aa-tool-card>header .aa-tool-actions{grid-column:2;justify-self:start;flex-wrap:wrap}.aa-event-table th,.aa-event-table td{padding:9px 11px}.aa-event-table th:nth-child(2),.aa-event-table td:nth-child(2){display:none}}';
     paint(
       '<style>' + styles + '</style>' +
       '<div class="aa-page">' +
@@ -7530,7 +7567,7 @@
     const findItem = (channel, id) => (ensureChannel(channel).items || []).find((item) => String(item.id) === String(id));
     const findPrimary = (channel, credentialKey) => (ensureChannel(channel).items || []).find((item) => credentialKey && String(item[credentialKey] || '').trim());
     const spField = (label, attr, value, placeholder, opts) =>
-      '<label class="aa-token-field"><span>' + esc(localize(label)) + (opts && opts.required ? ' <span style="color:var(--err)">*</span>' : '') + '</span><input class="input" type="' + ((opts && opts.secret) ? 'password' : 'text') + '" autocomplete="off" spellcheck="false" ' + ((opts && opts.readOnly) ? 'readonly ' : '') + attr + ' placeholder="' + esc(placeholder) + '" value="' + esc(value || '') + '"/></label>';
+      '<label class="aa-token-field"><span>' + esc(localize(label)) + (opts && opts.required ? ' <span style="color:var(--err)">*</span>' : '') + '</span><input class="input" type="' + ((opts && opts.secret) ? 'password' : 'text') + '" autocomplete="off" spellcheck="false" ' + ((opts && opts.readOnly) ? 'readonly ' : '') + attr + ' placeholder="' + esc(placeholder) + '" value="' + esc(value || '') + '"/>' + aaErrSlot(opts && opts.errKey) + '</label>';
     const openChannelEditor = (channel, existing) => {
       const def = channelDefs[channel];
       const bucket = ensureChannel(channel);
@@ -7557,10 +7594,11 @@
           : '') +
           field(def.nameField, 'data-aa-name', currentName, def.namePlaceholder) +
           (isDetected
-            ? field(def.idField, 'data-aa-id', currentId, def.idPlaceholder, { readOnly: true, required: true })
-            : areaField(def.snippetField, 'data-aa-snippet', currentSnippet, def.snippetPlaceholder, { required: true })) +
+            ? field(def.idField, 'data-aa-id', currentId, def.idPlaceholder, { readOnly: true, required: true, errKey: 'id' })
+            : areaField(def.snippetField, 'data-aa-snippet', currentSnippet, def.snippetPlaceholder, { required: true, errKey: 'snippet' })) +
           ordersBlock;
         const saveTrybe = (m, close) => {
+          clearAaErrs(m);
           const name = String((m.querySelector('[data-aa-name]') || {}).value || '').trim();
           const snippet = isDetected
             ? String(existing.snippet || '')
@@ -7571,16 +7609,16 @@
           const credential = String((m.querySelector('[data-aa-credential]') || {}).value || '').trim();
           const enabled = Boolean(credential);
           if (!isDetected && !snippet) {
-            toast(localize(def.snippetRequired), 'warning');
+            setAaErr(m, 'snippet', localize(def.snippetRequired));
             return;
           }
           if (!nextId) {
-            toast(localize(def.pixelRequired), 'warning');
+            setAaErr(m, isDetected ? 'id' : 'snippet', localize(def.pixelRequired));
             return;
           }
           const duplicate = (bucket.items || []).some((other) => String(other.id) === nextId && (!isEdit || String(other.id) !== currentId));
           if (duplicate) {
-            toast(localize('This ID is already listed.'), 'warning');
+            setAaErr(m, isDetected ? 'id' : 'snippet', localize('This ID is already listed.'));
             return;
           }
           if (enabled) {
@@ -7649,6 +7687,7 @@
         });
         const trybeCred = dialog.m.querySelector('[data-aa-credential]');
         if (trybeCred) trybeCred.addEventListener('blur', () => validateTrybeCredentialBlur(dialog.m));
+        wireAaErrClear(dialog.m, 'snippet');
         const focus = dialog.m.querySelector(isDetected || isEdit ? '[data-aa-name]' : '[data-aa-snippet]');
         if (focus) focus.focus();
         return;
@@ -7681,6 +7720,7 @@
         if (hasPrimaryConflict(nextId)) showPrimaryConflict();
       };
       const saveItem = (m, close) => {
+        clearAaErrs(m);
         const name = String((m.querySelector('[data-aa-name]') || {}).value || '').trim();
         const rawId = isDetected
           ? currentId
@@ -7691,16 +7731,16 @@
           : '';
         const enabled = Boolean(def.credentialKey && credential);
         if (!nextId) {
-          toast(localize(def.idRequired), 'warning');
+          setAaErr(m, 'id', localize(def.idRequired));
           return;
         }
         if (!isDetected && def.idPattern && !def.idPattern.test(nextId)) {
-          toast(localize(def.idInvalid || def.idRequired), 'warning');
+          setAaErr(m, 'id', localize(def.idInvalid || def.idRequired));
           return;
         }
         const duplicate = (bucket.items || []).some((other) => String(other.id).toUpperCase() === nextId.toUpperCase() && (!isEdit || String(other.id) !== currentId));
         if (duplicate) {
-          toast(localize('This ID is already listed.'), 'warning');
+          setAaErr(m, 'id', localize('This ID is already listed.'));
           return;
         }
         if (enabled) {
@@ -7748,7 +7788,7 @@
         width: 540,
         body: detectedHint + formHint +
           spField(def.nameField, 'data-aa-name', currentName, def.namePlaceholder) +
-          spField(def.idField, 'data-aa-id', currentId, def.idPlaceholder || def.idField, { required: true, readOnly: isDetected }) +
+          spField(def.idField, 'data-aa-id', currentId, def.idPlaceholder || def.idField, { required: true, readOnly: isDetected, errKey: isDetected ? '' : 'id' }) +
           capiBlock,
         okText: 'Save',
         extraLeft: isEdit && canDeleteItem(existing, def)
@@ -7761,6 +7801,7 @@
       });
       const credInput = dialog.m.querySelector('[data-aa-credential]');
       if (credInput) credInput.addEventListener('blur', () => validateCredentialBlur(dialog.m));
+      wireAaErrClear(dialog.m, 'id');
       const focus = dialog.m.querySelector(isEdit || isDetected ? '[data-aa-name]' : '[data-aa-id]');
       if (focus) focus.focus();
     };
