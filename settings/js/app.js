@@ -46,6 +46,7 @@
     analytics: svg('<path d="M4 19V10M10 19V5M16 19v-7M22 19H2"/>', 18),
     facebook:  svg('<path d="M14.5 4.5h-2.2A3.3 3.3 0 0 0 9 7.8V10H6v4h3v6h4v-6h3l.8-4H13V8.2c0-.8.3-1.2 1.3-1.2h2.5V3.2c-.7-.1-1.5-.2-2.3-.2Z"/>', 18),
     google:    svg('<path d="M20.5 12.2c0 4.7-3.2 8-8.3 8A8.2 8.2 0 1 1 12 3.8c2.1 0 3.8.8 5.1 2L15 7.8A4.8 4.8 0 1 0 16 13h-3.8V10h8.1c.1.5.2 1.1.2 2.2Z"/>', 18),
+    trybe:     svg('<path d="M4 5h16v3H14v11h-4V8H4V5Z"/>', 18),
     external: svg('<path d="M14 5h5v5"/><path d="M10 14 19 5"/><path d="M19 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/>', 14),
     alert: svg('<path d="M10.3 4.2 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 4.2a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/>', 16),
     refresh: svg('<path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v5h-5"/>', 16),
@@ -609,6 +610,9 @@
       'Once a tag is detected, BestCheckout automatically sends the checkout events shown below. You never need to configure events one by one.': '检测到标签后，BestCheckout 会自动发送下方所列的结账事件，无需逐项配置。',
       'Browser events: Detected Meta Pixel, GA4, and GTM tags receive the matching browser events in the table.': '浏览器事件：检测到的 Meta Pixel、GA4 和 GTM 标签会接收下表对应的浏览器事件。',
       'Server Purchase: After you save a Meta access token or GA4 API secret, BestCheckout also sends completed purchases (Purchase) from the server; other checkout events stay browser-only. Within each destination, browser and server copies of the same order are counted once. Meta, GA4, and GTM each receive their own events.': '服务端 Purchase：保存 Meta Access Token 或 GA4 API Secret 后，BestCheckout 还会从服务端发送已完成购买（Purchase）；其余结账事件仅由浏览器发送。同一渠道内，同一笔订单的浏览器与服务端 Purchase 只计一次；Meta、GA4 和 GTM 会分别收到各自的事件。',
+      'Server credentials (Access Token, API Secret, Orders API key) are always entered manually. Detection only finds destination IDs.': '服务端凭证 (Access Token、API Secret、Orders API key) 一律由商家手动填写; 检测只会发现目标 ID。',
+      'Server Purchase: After you manually save a Meta access token, GA4 API secret, or Trybe Orders API key, BestCheckout also sends completed purchases from the server; other checkout events stay browser-only. Within each destination, browser and server copies of the same order are counted once. Credentials are never auto-detected.': '服务端 Purchase：商家手动保存 Meta Access Token、GA4 API Secret 或 Trybe Orders API key 后，BestCheckout 还会从服务端发送已完成购买；其余结账事件仅由浏览器发送。同一渠道内，同一笔订单的浏览器与服务端 Purchase 只计一次。凭证不会被自动检测。',
+      'Trybe events: Product Viewed, Add to Cart, and Checkout. Product Viewed and Add to Cart stay on the Shopify storefront. BestCheckout maps purchase to Checkout on the thank-you page; begin_checkout has no Trybe mapping. When an Orders API key is saved, completed orders are also submitted via the Orders API.': 'Trybe 上报事件: Product Viewed、Add to Cart、Checkout. Product Viewed 与 Add to Cart 仍由 Shopify 店铺前台负责. BestCheckout 仅把 purchase 映射为 thank-you 页的 Checkout; begin_checkout 无 Trybe 对应. 保存 Orders API key 后, 成交订单还会经 Orders API 服务端提交.',
       'View coverage': '查看覆盖范围',
       'Shopify storefront keeps browsing, product, search and cart events. BestCheckout owns the checkout journey. When browser and server events are both used, Purchase is counted once per order.': 'Shopify 店铺前台继续负责浏览、商品、搜索和购物车事件。BestCheckout 负责结账流程；同时使用浏览器和服务端事件时，每笔订单的 Purchase 只计为一次。',
       'BestCheckout event': 'BestCheckout 事件',
@@ -681,6 +685,9 @@
       'Detected and matched IDs are used for browser events. CAPI and GA4 server events start only after the corresponding credential is saved.': '前台检测且匹配的 ID 用于浏览器事件；CAPI 和 GA4 服务端事件仅在保存对应凭证后启用。',
       'Detected IDs are used automatically for browser events. CAPI and GA4 server events start only after the corresponding credential is saved.': '前台检测到的 ID 会自动用于浏览器事件；CAPI 和 GA4 服务端事件仅在保存对应凭证后启用。',
       'BestCheckout automatically sends checkout events to tags detected on your Shopify storefront.': 'BestCheckout 会自动向 Shopify 店铺前台检测到的标签发送结账事件。',
+      'If no tags are detected, go to': '当前未检测到标签时, 请到',
+      'Settings → Shopify connection': '设置 → Shopify 连接',
+      'and click Sync now to refresh detection.': '点击立即同步手动更新.',
       'BestCheckout uses the detected Pixel for browser events. CAPI is enabled only when the saved Pixel ID matches it.': 'BestCheckout 使用检测到的 Pixel 发送浏览器事件；仅当已保存的 Pixel ID 与其一致时，才会启用 CAPI。',
       'BestCheckout uses the detected Pixel for browser events. Add an access token to also enable Conversions API.': 'BestCheckout 使用检测到的 Pixel 发送浏览器事件；添加 Access Token 后即可启用 Conversions API。',
       'BestCheckout uses the detected Measurement ID for checkout browser events. Add an API secret to also send GA4 server-side events.': 'BestCheckout 使用检测到的 Measurement ID 发送结账浏览器事件；添加 API Secret 后还会发送 GA4 服务端事件。',
@@ -700,6 +707,106 @@
       'Meta configuration disconnected.': 'Meta 配置已断开。',
       'GA4 configuration disconnected.': 'GA4 配置已断开。',
       'GTM configuration disconnected.': 'GTM 配置已断开。',
+      'Primary': '主要',
+      'Add Pixel': '添加像素',
+      'Add Measurement ID': '添加 Measurement ID',
+      'Add Container': '添加容器',
+      'Show more': '展开全部',
+      'Show less': '收起',
+      'Manual': '手动添加',
+      'Detected on storefront': '店铺前台检测到',
+      'Remove Access Token': '移除 Access Token',
+      'Remove API secret': '移除 API Secret',
+      'Update Access Token': '更新 Access Token',
+      'Update API secret': '更新 API Secret',
+      'Add Access Token': '添加 Access Token',
+      'Add API Secret': '添加 API Secret',
+      'Only one Primary CAPI combination is supported per channel.': '每个渠道仅支持一组 Primary 服务端回传。',
+      'To make this the Primary combination, remove the Access Token from the current Primary first.': '若要将当前组合设为 Primary，请先移除现有 Primary 的 Access Token。',
+      'To make this the Primary combination, remove the API secret from the current Primary first.': '若要将当前组合设为 Primary，请先移除现有 Primary 的 API Secret。',
+      'Remove Primary credential': '移除 Primary 凭证',
+      'Current Primary': '当前 Primary',
+      'Selected ID': '当前选择的 ID',
+      'Primary credential removed. You can add the credential for the selected ID now.': '已移除 Primary 凭证。现在可为所选 ID 添加凭证。',
+      'Access Token saved. This combination is now Primary.': 'Access Token 已保存，该组合已成为 Primary。',
+      'API secret saved. This combination is now Primary.': 'API Secret 已保存，该组合已成为 Primary。',
+      'Access Token removed.': 'Access Token 已移除。',
+      'API secret removed.': 'API Secret 已移除。',
+      'Pixel added.': '像素已添加。',
+      'Measurement ID added.': 'Measurement ID 已添加。',
+      'Container added.': '容器已添加。',
+      'Pixel updated.': '像素已更新。',
+      'Measurement ID updated.': 'Measurement ID 已更新。',
+      'Edit Pixel ID': '编辑 Pixel ID',
+      'Edit Measurement ID': '编辑 Measurement ID',
+      'Edit Pixel': '编辑像素',
+      'Edit Measurement ID item': '编辑 Measurement ID',
+      'Edit Container': '编辑容器',
+      'Pixel name': 'Pixel name',
+      'Measurement name': 'Measurement name',
+      'Container name': 'Container name',
+      'Enter pixel name': 'Enter pixel name',
+      'Enter measurement name': 'Enter measurement name',
+      'Enter container name': 'Enter container name',
+      'Enable Conversions API to also send completed purchases (Purchase) from the server, so ad blockers are less likely to drop them. Other checkout events stay browser-only.': '启用 Conversions API 后, 还会从服务端补发已完成购买 (Purchase), 降低广告拦截导致的丢失. 其余结账事件仍仅由浏览器发送.',
+      'Enable Measurement Protocol to also send completed purchases (purchase) from the server. Other checkout events stay browser-only.': '启用 Measurement Protocol 后, 还会从服务端补发已完成购买 (purchase). 其余结账事件仍仅由浏览器发送.',
+      'Yes': '是',
+      'No': '否',
+      'Delete': '删除',
+      'Edit': '编辑',
+      'Status': 'Status',
+      'Pages': 'Pages',
+      'Actions': 'Actions',
+      'Action': '操作',
+      'Active': 'Active',
+      'All pages': 'All pages',
+      'Bestcheckout pages': 'Bestcheckout pages',
+      'Source': '来源',
+      'Shopify store': 'Shopify store',
+      'Manual setup': 'Manual setup',
+      'ON': 'ON',
+      'Off': 'Off',
+      'Pixel deleted.': '像素已删除。',
+      'Measurement ID deleted.': 'Measurement ID 已删除。',
+      'Container deleted.': '容器已删除。',
+      'Delete this Pixel?': '删除此像素？',
+      'Delete this Measurement ID?': '删除此 Measurement ID？',
+      'Delete this Container?': '删除此容器？',
+      'Remove manually added Conversions API?': '移除手动添加的 Conversions API？',
+      'Remove manually added Measurement Protocol?': '移除手动添加的 Measurement Protocol？',
+      'This keeps the detected Pixel and only removes the Access Token.': '将保留已检测的 Pixel，仅移除 Access Token。',
+      'This keeps the detected Measurement ID and only removes the API Secret.': '将保留已检测的 Measurement ID，仅移除 API Secret。',
+      'Detected items without a manually added server credential cannot be deleted.': '检测项本身不可删除。未手动填写服务端凭证时不展示删除。',
+      'Detected destination IDs cannot be deleted. Remove the manually added server credential instead, or clear it in Edit.': '检测到的目标 ID 不可删除。请移除其上手动填写的服务端凭证, 或在编辑中关闭服务端上报。',
+      'Please enter an Access Token to enable Conversions API.': '请输入 Access Token 以启用 Conversions API。',
+      'Please enter an API Secret to enable Measurement Protocol.': '请输入 API Secret 以启用 Measurement Protocol。',
+      'You can add up to 10 IDs in this channel.': '该渠道最多可添加 10 个 ID。',
+      'This ID is already listed.': '该 ID 已在列表中。',
+      'Browser events go to every listed ID. Server Purchase uses only the Primary combination with a saved credential.': '浏览器事件会发送到列表中的每个 ID；服务端 Purchase 只使用已保存凭证的 Primary 组合。',
+      'Send checkout browser events to every listed Pixel. Add an Access Token on one Pixel to enable Conversions API as Primary.': '向列表中的每个 Pixel 发送结账浏览器事件；为一个 Pixel 添加 Access Token 后，该组合作为 Primary 启用 Conversions API。',
+      'Send checkout browser events to every listed Pixel. Manually add an Access Token on one Pixel to enable Conversions API as Primary. Tokens are never auto-detected.': '向列表中的每个 Pixel 发送结账浏览器事件；为一个 Pixel 手动添加 Access Token 后，该组合作为 Primary 启用 Conversions API。Token 不会被自动检测。',
+      'Send checkout browser events to every listed Measurement ID. Add an API Secret on one ID to enable Measurement Protocol as Primary.': '向列表中的每个 Measurement ID 发送结账浏览器事件；为一个 ID 添加 API Secret 后，该组合作为 Primary 启用 Measurement Protocol。',
+      'Send checkout browser events to every listed Measurement ID. Manually add an API Secret on one ID to enable Measurement Protocol as Primary. Secrets are never auto-detected.': '向列表中的每个 Measurement ID 发送结账浏览器事件；为一个 ID 手动添加 API Secret 后，该组合作为 Primary 启用 Measurement Protocol。Secret 不会被自动检测。',
+      'Send checkout browser events to every listed GTM container.': '向列表中的每个 GTM 容器发送结账浏览器事件。',
+      'Install Trybe on Shopify first. BestCheckout may detect the Pixel from the Shopify install. Orders API keys are never detected — paste them manually on a detected or custom Pixel.': '请先在 Shopify 安装 Trybe。BestCheckout 可能检测到 Shopify 安装带来的 Pixel；Orders API key 不会被检测，需手动粘贴到检测行或自定义 Pixel 上。',
+      'Paste the private Orders API key manually so BestCheckout can also send completed purchases to Trybe from the server. This key is never auto-detected.': '请手动粘贴 Orders API 私钥，以便 BestCheckout 从服务端向 Trybe 补发已完成购买。该 key 不会被自动检测。',
+      'Detected rows come from the Trybe Shopify install and cannot be deleted. Orders API keys must be pasted manually. You can still add one custom Pixel for BestCheckout pages.': '检测行来自 Trybe 的 Shopify 安装且不可删除。Orders API key 必须手动粘贴。仍可再添加一条用于 BestCheckout 页面的自定义 Pixel。',
+      'Keep one primary GTM container to avoid duplicate Meta, GA4, or Ads tags.': '建议只保留一个主 GTM 容器, 避免 Meta、GA4 或 Ads 标签重复触发。',
+      'Paste the Access Token from Meta Events Manager for this Pixel.': '粘贴 Meta Events Manager 中该 Pixel 的 Access Token。',
+      'Paste the Measurement Protocol API Secret for this Measurement ID.': '粘贴该 Measurement ID 的 Measurement Protocol API Secret。',
+      'Enter the Pixel ID to track in BestCheckout.': '输入要在 BestCheckout 中追踪的 Pixel ID。',
+      'Enter the GA4 Measurement ID to track in BestCheckout.': '输入要在 BestCheckout 中追踪的 GA4 Measurement ID。',
+      'Enter the GTM Container ID to track in BestCheckout.': '输入要在 BestCheckout 中追踪的 GTM Container ID。',
+      'Paste Pixel ID': 'Paste Pixel ID',
+      'Paste Measurement ID': 'Paste Measurement ID',
+      'Paste Container ID': 'Paste Container ID',
+      'BestCheckout uses the Pixel ID for browser events. Add an Access Token to also enable Conversions API.': 'BestCheckout 使用 Pixel ID 发送浏览器事件；添加 Access Token 后即可启用 Conversions API。',
+      'BestCheckout uses the Measurement ID for checkout browser events. Add an API Secret to also send GA4 server-side events.': 'BestCheckout 使用 Measurement ID 发送结账浏览器事件；添加 API Secret 后还会发送 GA4 服务端事件。',
+      'No Pixel listed yet. Add a Pixel to start browser event delivery.': '尚未添加 Pixel。添加后即可发送浏览器事件。',
+      'No Measurement ID listed yet. Add one to start browser event delivery.': '尚未添加 Measurement ID。添加后即可发送浏览器事件。',
+      'No Container listed yet. Add one to start browser event delivery.': '尚未添加容器。添加后即可发送浏览器事件。',
+      'No storefront tags were detected. Add a Pixel, Measurement ID, or Container before BestCheckout can send checkout events.': '未在店铺前台检测到标签。请先添加 Pixel、Measurement ID 或容器，BestCheckout 才会发送结账事件。',
+      'Event names below stay ready. Nothing is delivered until at least one destination ID is listed.': '下方事件名称已准备好。在至少添加一个目标 ID 之前，不会实际发送任何事件。',
       'App permissions': '应用权限',
       'Shopify API access scopes': 'Shopify API 权限范围',
       'Docs': '文档',
@@ -4339,7 +4446,7 @@
   // ===========================================================================
   // MODAL (shared) — mirrors the orders prototype modal
   // ===========================================================================
-  function modal({ title, body, width, okText, onOk, extraLeft, onExtra, danger, hideCancel, okStyle }) {
+  function modal({ title, body, width, okText, onOk, extraLeft, onExtra, danger, hideCancel, okStyle, hideFooter }) {
     const backdrop = h('<div class="modal-backdrop"></div>');
     const m = h('<div class="modal"></div>');
     if (width) m.style.width = width + 'px';
@@ -4348,22 +4455,26 @@
       '<div class="modal-head flex items-center justify-between"><span>' + esc(title) + '</span>' +
         '<span class="drawer-x" data-x style="cursor:pointer">' + I.x + '</span></div>' +
       '<div class="modal-body" style="max-height:70vh;overflow:auto">' + body + '</div>' +
-      '<div class="modal-foot" style="justify-content:' + (extraLeft ? 'space-between' : 'flex-end') + '">' +
-        (extraLeft || '') +
-        '<div class="flex gap-2">' + (hideCancel ? '' : '<button class="btn btn-default" data-cancel>Cancel</button>') +
-        '<button class="btn ' + (danger || okStyle ? '' : 'btn-primary') + '" ' + (danger ? 'style="background:var(--err);color:#fff"' : (okStyle ? 'style="' + okStyle + '"' : '')) + ' data-ok>' + (okText || 'Save') + '</button></div></div>';
+      (hideFooter
+        ? ''
+        : '<div class="modal-foot" style="justify-content:' + (extraLeft ? 'space-between' : 'flex-end') + '">' +
+          (extraLeft || '') +
+          '<div class="flex gap-2">' + (hideCancel ? '' : '<button class="btn btn-default" data-cancel>Cancel</button>') +
+          '<button class="btn ' + (danger || okStyle ? '' : 'btn-primary') + '" ' + (danger ? 'style="background:var(--err);color:#fff"' : (okStyle ? 'style="' + okStyle + '"' : '')) + ' data-ok>' + (okText || 'Save') + '</button></div></div>');
     backdrop.appendChild(m); document.body.appendChild(backdrop);
     const close = () => backdrop.remove();
     m.querySelector('[data-x]').onclick = close;
     const cancelBtn = m.querySelector('[data-cancel]'); if (cancelBtn) cancelBtn.onclick = close;
     backdrop.onclick = (e) => { if (e.target === backdrop) close(); };
-    m.querySelector('[data-ok]').onclick = () => onOk(m, close);
+    const okBtn = m.querySelector('[data-ok]');
+    if (okBtn) okBtn.onclick = () => onOk && onOk(m, close);
     // submit on Enter from a text input (textarea / Shift+Enter keep newline behavior)
     m.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { e.preventDefault(); close(); return; }
       if (e.key === 'Enter' && !e.shiftKey && e.target && e.target.tagName === 'INPUT') {
         e.preventDefault();
-        const okBtn = m.querySelector('[data-ok]');
-        if (okBtn) okBtn.click();
+        const submit = m.querySelector('[data-ok]');
+        if (submit) submit.click();
       }
     });
     const disc = m.querySelector('[data-disc]'); if (disc && onExtra) disc.onclick = () => onExtra(m, close);
@@ -4375,6 +4486,22 @@
     });
     return { m, close };
   }
+
+  // Error alert: title + copy + close (X) only. No footer actions.
+  const alertModal = (opts) => {
+    const title = String(opts.title || '');
+    const alreadyOpen = [...document.querySelectorAll('.modal-backdrop')].some((backdrop) => {
+      const head = backdrop.querySelector('.modal-head span');
+      return head && head.textContent === title && !backdrop.querySelector('.modal-foot');
+    });
+    if (alreadyOpen) return null;
+    return modal({
+      title: title,
+      width: opts.width || 460,
+      body: '<div class="muted" style="font-size:13.5px;line-height:1.6">' + esc(opts.content || '') + '</div>',
+      hideFooter: true,
+    });
+  };
 
   // ===========================================================================
   // ROUTER  (SPA: shell passes `rest` = the part after #/settings/)
@@ -7047,177 +7174,642 @@
   // Meta, GA4 and GTM map to separate BestShopio configuration APIs. Runtime
   // storefront detection is deliberately kept outside saved credentials.
   // ===========================================================================
+
+  function resolveAdvertisingAnalytics() {
+    const storeName = (window.SITE && window.SITE.store) || '';
+    const byStore = D.advertisingAnalyticsByStore || {};
+    const base = D.advertisingAnalytics || {};
+    const override = byStore[storeName];
+    if (!override) return base;
+    if (!override.events) override.events = base.events;
+    return override;
+  }
+
   function renderAdvertisingAnalyticsV2() {
-    const a = D.advertisingAnalytics;
+    const a = resolveAdvertisingAnalytics();
     const localize = (text) => {
       const i18n = window.I18N;
       return i18n && i18n.lang === 'zh' && typeof i18n.t === 'function'
         ? i18n.t(text)
         : text;
     };
+    const AA_MAX = 10;
     const values = (list) => [...new Set((list || []).map((value) => String(value || '').trim()).filter(Boolean))];
-    const meta = a.meta || {};
-    const ga4 = a.ga4 || {};
-    const gtm = a.gtm || {};
-    const metaIds = values(meta.detection && meta.detection.pixelIds);
-    const ga4Ids = values(ga4.detection && ga4.detection.measurementIds);
-    const gtmIds = values(gtm.detection && gtm.detection.containerIds);
-    const metaConfig = meta.config || { pixelId: '', accessToken: '', enabled: false };
-    const ga4Config = ga4.config || { measurementId: '', apiSecret: '', enabled: false };
-    const single = (list) => list.length === 1 ? list[0] : '';
-    const metaDetected = single(metaIds);
-    const ga4Detected = single(ga4Ids);
-    const metaMatch = Boolean(metaDetected && metaConfig.pixelId && metaConfig.pixelId === metaDetected);
-    const ga4Match = Boolean(ga4Detected && ga4Config.measurementId === ga4Detected);
-    const metaBrowser = Boolean(metaIds.length);
-    const metaServer = Boolean(metaConfig.enabled && metaConfig.accessToken && metaMatch);
-    const ga4Browser = Boolean(ga4Ids.length);
-    const ga4Server = Boolean(ga4Config.enabled && ga4Browser && ga4Config.apiSecret && ga4Match);
-    const gtmBrowser = Boolean(gtmIds.length);
-    const detectTone = (ids) => ids.length ? 'detected' : 'neutral';
-    const detectLabel = (ids) => ids.length ? 'Detected' : 'Not detected';
+    const ensureChannel = (channel) => {
+      const bucket = a[channel] || (a[channel] = {});
+      if (!Array.isArray(bucket.items)) bucket.items = [];
+      if (!bucket.detection) bucket.detection = {};
+      return bucket;
+    };
+    const syncDetected = (channel, detectedKey, credentialKey) => {
+      const bucket = ensureChannel(channel);
+      const detected = values(bucket.detection[detectedKey]);
+      const byId = new Map(bucket.items.map((item) => [String(item.id || '').trim(), item]));
+      detected.forEach((id) => {
+        if (byId.has(id)) {
+          const item = byId.get(id);
+          if (!item.source) item.source = 'detected';
+        } else {
+          const next = { id, source: 'detected' };
+          if (credentialKey) next[credentialKey] = '';
+          bucket.items.push(next);
+          byId.set(id, next);
+        }
+      });
+      bucket.items = bucket.items.filter((item) => {
+        const id = String(item.id || '').trim();
+        return id && (item.source === 'manual' || detected.includes(id) || Boolean(credentialKey && item[credentialKey]));
+      });
+      return bucket;
+    };
+    const sortItems = (items, credentialKey) => items.slice().sort((left, right) => {
+      const leftPrimary = credentialKey ? Boolean(String(left[credentialKey] || '').trim()) : false;
+      const rightPrimary = credentialKey ? Boolean(String(right[credentialKey] || '').trim()) : false;
+      if (leftPrimary !== rightPrimary) return leftPrimary ? -1 : 1;
+      return String(left.id).localeCompare(String(right.id));
+    });
+    const meta = syncDetected('meta', 'pixelIds', 'accessToken');
+    const ga4 = syncDetected('ga4', 'measurementIds', 'apiSecret');
+    const gtm = syncDetected('gtm', 'containerIds', '');
+    const trybe = syncDetected('trybe', 'pixelCodes', 'apiKey');
+    meta.items = sortItems(meta.items, 'accessToken');
+    ga4.items = sortItems(ga4.items, 'apiSecret');
+    gtm.items = sortItems(gtm.items, '');
+    trybe.items = sortItems(trybe.items, 'apiKey');
     const status = (label, tone) => '<span class="aa-status ' + (tone || 'neutral') + '"><i></i>' + esc(localize(label)) + '</span>';
-    const toolCard = (opts) =>
-      '<section class="aa-tool-card">' +
-        '<header><span class="aa-tool-icon ' + esc(opts.kind) + '">' + opts.icon + '</span><div><h2>' + esc(localize(opts.title)) + '</h2><p>' + esc(localize(opts.description)) + '</p></div>' + status(opts.detectLabel, opts.detectTone) + '</header>' +
-        '<div class="aa-connector-row' + (opts.action ? '' : ' no-action') + '"><span class="aa-connector-badge ' + esc(opts.kind) + '">' + esc(opts.badge) + '</span><div class="aa-connector-copy"><strong>' + esc(localize(opts.connectorTitle)) + '</strong><small>' + opts.summary + '</small></div><div class="aa-connector-state">' + status(opts.deliveryLabel, opts.deliveryTone) + '</div>' + (opts.action ? '<button class="btn btn-default" type="button" data-aa-v2="' + esc(opts.action) + '">' + esc(localize(opts.actionLabel)) + '</button>' : '') + '</div>' +
+    const parseTrybePixelCode = (snippet) => {
+      const match = String(snippet || '').match(/px_[a-zA-Z0-9]+/);
+      return match ? match[0] : '';
+    };
+    const channelDefs = {
+      meta: {
+        kind: 'meta',
+        icon: I.facebook,
+        badge: 'Meta',
+        title: 'Meta Pixel & Conversions API',
+        description: 'Send checkout browser events to every listed Pixel. Manually add an Access Token on one Pixel to enable Conversions API as Primary. Tokens are never auto-detected.',
+        connectorTitle: 'Meta tracking',
+        idLabel: 'Storefront Pixel ID',
+        addLabel: 'Add Pixel',
+        editLabel: 'Edit Pixel',
+        nameField: 'Pixel name',
+        namePlaceholder: 'Enter pixel name',
+        capiTitle: 'Conversions API',
+        capiDesc: 'Enable Conversions API to also send completed purchases (Purchase) from the server, so ad blockers are less likely to drop them. Other checkout events stay browser-only.',
+        credentialRequired: 'Please enter an Access Token to enable Conversions API.',
+        deleteConfirm: 'Delete this Pixel?',
+        deletedToast: 'Pixel deleted.',
+        credentialKey: 'accessToken',
+        credentialConfigured: 'Access token configured',
+        credentialMissing: 'CAPI not configured',
+        addCredential: 'Add Access Token',
+        updateCredential: 'Update Access Token',
+        removeCredential: 'Remove Access Token',
+        removeCredentialConfirm: 'Remove manually added Conversions API?',
+        removeCredentialCopy: 'This keeps the detected Pixel and only removes the Access Token.',
+        fieldLabel: 'CAPI access token',
+        fieldPlaceholder: 'Paste access token',
+        emptyCopy: 'No Pixel listed yet. Add a Pixel to start browser event delivery.',
+        conflictCopy: 'To make this the Primary combination, remove the Access Token from the current Primary first.',
+        savedToast: 'Access Token saved. This combination is now Primary.',
+        removedToast: 'Access Token removed.',
+        addedToast: 'Pixel added.',
+        idPrompt: 'BestCheckout uses the Pixel ID for browser events. Add an Access Token to also enable Conversions API.',
+        idField: 'Pixel ID',
+        idPlaceholder: 'Paste Pixel ID',
+        idRequired: 'Please enter a Pixel ID.',
+        pasteHint: 'Paste the Access Token from Meta Events Manager for this Pixel.',
+      },
+      ga4: {
+        kind: 'ga4',
+        icon: I.google,
+        badge: 'GA4',
+        title: 'Google Analytics 4',
+        description: 'Send checkout browser events to every listed Measurement ID. Manually add an API Secret on one ID to enable Measurement Protocol as Primary. Secrets are never auto-detected.',
+        connectorTitle: 'GA4 tracking',
+        idLabel: 'Storefront Measurement ID',
+        addLabel: 'Add Measurement ID',
+        editLabel: 'Edit Measurement ID item',
+        nameField: 'Measurement name',
+        namePlaceholder: 'Enter measurement name',
+        capiTitle: 'Measurement Protocol',
+        capiDesc: 'Enable Measurement Protocol to also send completed purchases (purchase) from the server. Other checkout events stay browser-only.',
+        credentialRequired: 'Please enter an API Secret to enable Measurement Protocol.',
+        deleteConfirm: 'Delete this Measurement ID?',
+        deletedToast: 'Measurement ID deleted.',
+        credentialKey: 'apiSecret',
+        credentialConfigured: 'API secret configured',
+        credentialMissing: 'API secret not configured',
+        addCredential: 'Add API Secret',
+        updateCredential: 'Update API secret',
+        removeCredential: 'Remove API secret',
+        removeCredentialConfirm: 'Remove manually added Measurement Protocol?',
+        removeCredentialCopy: 'This keeps the detected Measurement ID and only removes the API Secret.',
+        fieldLabel: 'API secret (Measurement Protocol)',
+        fieldPlaceholder: 'Paste API secret',
+        emptyCopy: 'No Measurement ID listed yet. Add one to start browser event delivery.',
+        conflictCopy: 'To make this the Primary combination, remove the API secret from the current Primary first.',
+        savedToast: 'API secret saved. This combination is now Primary.',
+        removedToast: 'API secret removed.',
+        addedToast: 'Measurement ID added.',
+        idPrompt: 'BestCheckout uses the Measurement ID for checkout browser events. Add an API Secret to also send GA4 server-side events.',
+        idField: 'Measurement ID',
+        idPlaceholder: 'Paste Measurement ID',
+        idRequired: 'Please enter a Measurement ID.',
+        pasteHint: 'Paste the Measurement Protocol API Secret for this Measurement ID.',
+        secretInput: true,
+      },
+      gtm: {
+        kind: 'gtm',
+        icon: I.google,
+        badge: 'GTM',
+        title: 'Google Tag Manager',
+        description: 'Send checkout browser events to every listed GTM container.',
+        connectorTitle: 'GTM tracking',
+        idLabel: 'Storefront Container ID',
+        addLabel: 'Add Container',
+        editLabel: 'Edit Container',
+        nameField: 'Container name',
+        namePlaceholder: 'Enter container name',
+        credentialKey: '',
+        deleteConfirm: 'Delete this Container?',
+        deletedToast: 'Container deleted.',
+        emptyCopy: 'No Container listed yet. Add one to start browser event delivery.',
+        addedToast: 'Container added.',
+        idPrompt: 'Enter the GTM Container ID to track in BestCheckout.',
+        formHint: 'Keep one primary GTM container to avoid duplicate Meta, GA4, or Ads tags.',
+        idField: 'Container ID',
+        idPlaceholder: 'Paste Container ID',
+        idRequired: 'Please enter a Container ID.',
+      },
+      trybe: {
+        kind: 'trybe',
+        icon: I.trybe,
+        badge: 'Trybe',
+        customCode: true,
+        maxItems: 2,
+        maxManual: 1,
+        title: 'Trybe Pixel & Orders API',
+        description: 'Install Trybe on Shopify first. BestCheckout may detect the Pixel from the Shopify install. Orders API keys are never detected — paste them manually on a detected or custom Pixel.',
+        connectorTitle: 'Trybe tracking',
+        addLabel: 'Add Trybe Pixel',
+        editLabel: 'Edit Trybe Pixel',
+        nameField: 'Name',
+        namePlaceholder: 'Enter a name',
+        snippetField: 'Pixel snippet',
+        snippetPlaceholder: 'Paste the Trybe Pixel JavaScript from the Brand Portal',
+        snippetRequired: 'Please paste the Trybe Pixel snippet.',
+        pixelRequired: 'Snippet must include a Pixel code (px_…).',
+        capiTitle: 'Orders API',
+        capiDesc: 'Paste the private Orders API key manually so BestCheckout can also send completed purchases to Trybe from the server. This key is never auto-detected.',
+        credentialRequired: 'Please enter an Orders API key to enable server reporting.',
+        deleteConfirm: 'Delete this Trybe Pixel?',
+        deletedToast: 'Trybe Pixel deleted.',
+        credentialKey: 'apiKey',
+        credentialConfigured: 'Orders API configured',
+        credentialMissing: 'Orders API not configured',
+        fieldLabel: 'Orders API key',
+        fieldPlaceholder: 'Paste sk_… key from Trybe Brand Portal',
+        emptyCopy: 'No Trybe Pixel listed yet. Add one after you install Trybe on Shopify, or paste a custom snippet.',
+        conflictCopy: 'Only one Orders API key is used as Primary. Remove the key from the current Primary first.',
+        savedToast: 'Orders API key saved.',
+        removedToast: 'Orders API key removed.',
+        addedToast: 'Trybe Pixel added.',
+        idField: 'Pixel code',
+        idPlaceholder: 'px_…',
+        idRequired: 'Please enter a Pixel code.',
+        formHint: 'Detected rows come from the Trybe Shopify install and cannot be deleted. Orders API keys must be pasted manually. You can still add one custom Pixel for BestCheckout pages.',
+        secretInput: true,
+      },
+    };
+    const field = (label, attr, value, placeholder, opts) =>
+      '<label class="aa-token-field"><span>' + esc(localize(label)) + (opts && opts.optional ? ' <b class="muted" style="font-weight:500">(' + esc(localize('Optional')) + ')</b>' : '') + '</span><input class="input" type="' + ((opts && opts.secret) ? 'password' : 'text') + '" autocomplete="off" spellcheck="false" ' + ((opts && opts.readOnly) ? 'readonly ' : '') + attr + ' placeholder="' + esc(placeholder) + '" value="' + esc(value || '') + '" /></label>';
+    const areaField = (label, attr, value, placeholder) =>
+      '<label class="aa-token-field"><span>' + esc(localize(label)) + '</span><textarea class="input" ' + attr + ' placeholder="' + esc(placeholder) + '" style="min-height:120px;height:auto;padding:8px 11px;resize:vertical;width:100%;box-sizing:border-box;font-weight:400;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px">' + esc(value || '') + '</textarea></label>';
+    const hasManualCredential = (item, def) => Boolean(
+      def.credentialKey &&
+      String(item[def.credentialKey] || '').trim() &&
+      item.credentialSource === 'manual'
+    );
+    const canDeleteItem = (item, def) => {
+      if (def.customCode && item.source === 'detected') return false;
+      return item.source === 'manual' || hasManualCredential(item, def);
+    };
+    const channelLimit = (def) => def.maxItems || AA_MAX;
+    const manualCount = (bucket) => (bucket.items || []).filter((item) => item.source === 'manual').length;
+    const canAddItem = (channel, def) => {
+      const bucket = ensureChannel(channel);
+      if (def.customCode) return manualCount(bucket) < (def.maxManual || 1);
+      return (bucket.items || []).length < channelLimit(def);
+    };
+    const clearCredential = (item, def) => {
+      if (!def.credentialKey) return;
+      item[def.credentialKey] = '';
+      item.credentialSource = '';
+    };
+    const renderRows = (channel, def) => {
+      const bucket = ensureChannel(channel);
+      const items = sortItems(bucket.items, def.credentialKey);
+      bucket.items = items;
+      if (!items.length) return '';
+      const capiHeader = def.credentialKey
+        ? '<th class="aa-cred-cell">' + esc(localize(def.capiTitle || 'Conversions API')) + '</th>'
+        : '';
+      const rows = items.map((item) => {
+        const id = String(item.id || '').trim();
+        const credentialValue = def.credentialKey ? String(item[def.credentialKey] || '').trim() : '';
+        const name = String(item.name || '').trim();
+        const sourceLabel = item.source === 'manual' ? 'Manual setup' : 'Shopify store';
+        const allowDelete = canDeleteItem(item, def);
+        const capiCell = def.credentialKey
+          ? (credentialValue
+            ? '<td class="aa-cred-cell"><span class="aa-cred-value" title="' + esc(credentialValue) + '">' + esc(credentialValue) + '</span></td>'
+            : '<td class="aa-cred-cell">—</td>')
+          : '';
+        return '<tr>' +
+          '<td>' + esc(id) + '</td>' +
+          '<td>' + esc(localize(sourceLabel)) + '</td>' +
+          '<td style="font-weight:500;color:var(--ink)">' + esc(name || '—') + '</td>' +
+          capiCell +
+          '<td class="aa-action-cell"><div class="flex" style="gap:2px">' +
+            '<button class="sp-icon-btn" type="button" data-aa-edit="' + esc(channel) + '" data-aa-id="' + esc(id) + '" title="' + esc(localize('Edit')) + '">' + I.pencil + '</button>' +
+            (allowDelete
+              ? '<button class="sp-icon-btn danger" type="button" data-aa-delete="' + esc(channel) + '" data-aa-id="' + esc(id) + '" title="' + esc(localize('Delete')) + '">' + I.trash + '</button>'
+              : '') +
+          '</div></td>' +
+        '</tr>';
+      }).join('');
+      return '<div class="tbl-wrap aa-pixel-table-wrap"><table class="tbl aa-pixel-table' + (def.credentialKey ? ' aa-pixel-table--cred' : '') + '"><thead><tr>' +
+        '<th>' + esc(localize(def.idField)) + '</th>' +
+        '<th>' + esc(localize('Source')) + '</th>' +
+        '<th>' + esc(localize(def.nameField)) + '</th>' +
+        capiHeader +
+        '<th class="aa-action-cell">' + esc(localize('Action')) + '</th>' +
+      '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+    };
+    const toolCard = (channel) => {
+      const def = channelDefs[channel];
+      const bucket = ensureChannel(channel);
+      const items = bucket.items || [];
+      const detectedPresent = def.customCode
+        ? values(bucket.detection && bucket.detection.pixelCodes).length > 0 || items.some((item) => item.source === 'detected')
+        : items.length > 0;
+      const detectTone = detectedPresent ? 'detected' : 'neutral';
+      const detectLabel = detectedPresent ? 'Detected' : 'Not detected';
+      const addDisabled = canAddItem(channel, def) ? '' : ' disabled';
+      return '<section class="aa-tool-card">' +
+        '<header><span class="aa-tool-icon ' + esc(def.kind) + '">' + def.icon + '</span><div><h2>' + esc(localize(def.title)) + '</h2><p>' + esc(localize(def.description)) + '</p></div><div class="aa-tool-actions">' + status(detectLabel, detectTone) + '<button class="btn btn-default" type="button" data-aa-add="' + esc(channel) + '"' + addDisabled + '>' + esc(localize(def.addLabel)) + '</button></div></header>' +
+        renderRows(channel, def) +
       '</section>';
-    const idsText = (ids) => ids.join(', ') || '—';
-    const metaCredentialStatus = metaServer ? 'Access token configured' : metaIds.length > 1 ? 'A unique storefront Pixel is required before server events can be enabled.' : metaConfig.accessToken ? 'Needs confirmation' : 'CAPI not configured';
-    const ga4CredentialStatus = ga4Server ? 'API secret configured' : ga4Ids.length > 1 ? 'A unique Measurement ID is required before GA4 server events can be enabled.' : ga4Config.apiSecret ? 'Needs confirmation' : 'API secret not configured';
-    const metaSummary = '<span>' + esc(localize('Storefront Pixel ID')) + '</span>: <b>' + esc(idsText(metaIds)) + '</b><em>·</em>' + esc(localize(metaCredentialStatus));
-    const ga4Summary = '<span>' + esc(localize('Storefront Measurement ID')) + '</span>: <b>' + esc(idsText(ga4Ids)) + '</b><em>·</em>' + esc(localize(ga4CredentialStatus));
-    const gtmSummary = '<span>' + esc(localize('Storefront Container ID')) + '</span>: <b>' + esc(idsText(gtmIds)) + '</b>';
-    const metaCard = toolCard({
-      kind: 'meta',
-      icon: I.facebook,
-      badge: 'Meta',
-      title: 'Meta Pixel & Conversions API',
-      description: 'Send checkout browser events through the detected Pixel. Add an access token for Conversions API.',
-      connectorTitle: 'Meta tracking',
-      detectLabel: detectLabel(metaIds),
-      detectTone: detectTone(metaIds),
-      summary: metaSummary,
-      deliveryLabel: metaServer ? 'Browser and server events active' : metaBrowser ? 'Browser events active' : (metaIds.length ? 'Needs confirmation' : 'Not configured'),
-      deliveryTone: metaServer || metaBrowser ? 'active' : (metaIds.length ? 'attention' : 'neutral'),
-      action: metaDetected ? 'meta' : '',
-      actionLabel: metaConfig.accessToken ? 'Update access token' : 'Add access token',
-    });
-    const ga4Card = toolCard({
-      kind: 'ga4',
-      icon: I.google,
-      badge: 'GA4',
-      title: 'Google Analytics 4',
-      description: 'Send checkout events directly to GA4. Add an API secret for Measurement Protocol.',
-      connectorTitle: 'GA4 tracking',
-      detectLabel: detectLabel(ga4Ids),
-      detectTone: detectTone(ga4Ids),
-      summary: ga4Summary,
-      deliveryLabel: ga4Server ? 'Browser and server events active' : ga4Browser ? 'Browser events active' : (ga4Ids.length ? 'Needs confirmation' : 'Not configured'),
-      deliveryTone: ga4Server || ga4Browser ? 'active' : (ga4Ids.length ? 'attention' : 'neutral'),
-      action: ga4Detected ? 'ga4' : '',
-      actionLabel: ga4Config.apiSecret ? 'Update API secret' : 'Add API secret',
-    });
-    const gtmCard = toolCard({
-      kind: 'gtm',
-      icon: I.google,
-      badge: 'GTM',
-      title: 'Google Tag Manager',
-      description: 'Send checkout events to the detected GTM container.',
-      connectorTitle: 'GTM tracking',
-      detectLabel: detectLabel(gtmIds),
-      detectTone: detectTone(gtmIds),
-      summary: gtmSummary,
-      deliveryLabel: gtmBrowser ? 'Browser events active' : (gtmIds.length ? 'Needs confirmation' : 'Not configured'),
-      deliveryTone: gtmBrowser ? 'active' : (gtmIds.length ? 'attention' : 'neutral'),
-      action: '',
-      actionLabel: '',
-    });
+    };
     const eventRows = (a.events || []).map((event) =>
-      '<tr><td><code>' + esc(event.id) + '</code><span>' + esc(event.label) + '</span></td><td>' + esc(event.meta) + '</td><td><code>' + esc(event.ga4) + '</code></td><td><code>' + esc(event.gtm) + '</code></td></tr>'
+      '<tr><td><code>' + esc(event.id) + '</code><span>' + esc(event.label) + '</span></td><td>' + esc(event.meta) + '</td><td><code>' + esc(event.ga4) + '</code></td><td><code>' + esc(event.gtm) + '</code></td><td>' + esc(event.trybe || '—') + '</td></tr>'
     ).join('');
+    const undetected = !(meta.items.length || ga4.items.length || gtm.items.length || trybe.items.length);
+    const eventNoteCopy = undetected
+      ? '<p>' + esc(localize('No storefront tags were detected. Add a Pixel, Measurement ID, Container, or Trybe Pixel before BestCheckout can send checkout events.')) + '</p><p>' + esc(localize('Event names below stay ready. Nothing is delivered until at least one destination ID is listed.')) + '</p>'
+      : '<p>' + esc(localize('Browser events: Detected Meta Pixel, GA4, GTM, and Trybe tags receive the matching browser events in the table.')) + '</p><p>' + esc(localize('Trybe events: Product Viewed, Add to Cart, and Checkout. Product Viewed and Add to Cart stay on the Shopify storefront. BestCheckout maps purchase to Checkout on the thank-you page; begin_checkout has no Trybe mapping. When an Orders API key is saved, completed orders are also submitted via the Orders API.')) + '</p><p>' + esc(localize('Browser events go to every listed ID. Server Purchase uses only the Primary combination with a saved credential.')) + '</p><p>' + esc(localize('Server credentials (Access Token, API Secret, Orders API key) are always entered manually. Detection only finds destination IDs.')) + '</p><p>' + esc(localize('Server Purchase: After you manually save a Meta access token, GA4 API secret, or Trybe Orders API key, BestCheckout also sends completed purchases from the server; other checkout events stay browser-only. Within each destination, browser and server copies of the same order are counted once. Credentials are never auto-detected.')) + '</p>';
     const styles =
-      '.aa-page{display:grid;gap:16px;max-width:1080px}.aa-page>.flex:first-child{margin-bottom:0}.aa-config-stack{display:grid;gap:14px}.aa-tool-card{overflow:hidden;border:1px solid var(--hair);border-radius:12px;background:#fff}.aa-tool-card>header{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:start;padding:17px 18px 14px;border-bottom:1px solid #eef1f4}.aa-tool-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:10px}.aa-tool-icon.meta{color:#1466d9;background:#eaf2ff}.aa-tool-icon.ga4{color:#d97706;background:#fff4df}.aa-tool-icon.gtm{color:#246fdb;background:#edf5ff}.aa-tool-card h2{margin:0;color:var(--ink);font-size:16px;line-height:1.35}.aa-tool-card header p{margin:4px 0 0;color:var(--ink-muted);font-size:12px;line-height:1.5}.aa-status{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;color:#6b7280;background:#f4f5f7;font-size:11px;font-weight:700;white-space:nowrap}.aa-status i{width:6px;height:6px;border-radius:50%;background:#8a94a6}.aa-status.active{color:#167447;background:#e6f6ec}.aa-status.active i{background:#1a9b56}.aa-status.detected{color:#185e9d;background:#eaf4ff}.aa-status.detected i{background:#3585d6}.aa-status.attention{color:#aa5410;background:#fff0df}.aa-status.attention i{background:#d97706}.aa-detection{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 18px;border-bottom:1px solid #eef1f4;background:#fbfcfd}.aa-detection>div:first-child{display:grid;gap:2px}.aa-detection span{color:var(--ink);font-size:12px;font-weight:650}.aa-detection small{color:var(--ink-muted);font-size:11px}.aa-detect-tags{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px}.aa-detect-tag{padding:4px 7px;border:1px solid #d9e8fb;border-radius:6px;color:#245c9e;background:#f3f8ff;font:600 11px/1.2 ui-monospace,Menlo,Consolas,monospace}.aa-detect-empty{color:var(--ink-muted)!important;font-weight:500!important}.aa-connector-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:12px;align-items:center;margin:14px 18px;padding:12px 14px;border-radius:9px;background:#f6f8fb}.aa-connector-row.no-action{grid-template-columns:auto minmax(0,1fr) auto}.aa-connector-badge{display:grid;place-items:center;min-width:40px;height:32px;padding:0 8px;border-radius:7px;font-size:12px;font-weight:750}.aa-connector-badge.meta{color:#1466d9;background:#eaf2ff}.aa-connector-badge.ga4{color:#bc7500;background:#fff1cf}.aa-connector-badge.gtm{color:#fff;background:#246fdb}.aa-connector-copy{display:grid;min-width:0;gap:3px}.aa-connector-copy strong{color:var(--ink);font-size:13px}.aa-connector-copy small{display:flex;flex-wrap:wrap;gap:4px;color:var(--ink-muted);font-size:12px;line-height:1.4}.aa-connector-copy small b{color:var(--ink);font-weight:650}.aa-connector-copy small em{font-style:normal;color:#aab2bd}.aa-connector-row .btn{height:32px;font-size:12px}.aa-event-coverage{overflow:hidden;border:1px solid var(--hair);border-radius:12px;background:#fff}.aa-event-coverage-head{display:grid;gap:3px;padding:16px 18px}.aa-event-coverage-head strong{color:var(--ink);font-size:14px}.aa-event-coverage-head small{color:var(--ink-muted);font-size:12px;line-height:1.45}.aa-event-note{display:flex;gap:10px;margin:0 18px 14px;padding:10px 11px;border:1px solid #dbe8fb;border-radius:8px;color:#365675;background:#f7faff;font-size:12px;line-height:1.5}.aa-event-note svg{flex:none;margin-top:1px}.aa-event-note-copy{display:grid;gap:5px;min-width:0}.aa-event-note-copy p{margin:0}.aa-event-table{width:100%;border-collapse:collapse;border-top:1px solid #edf0f3}.aa-event-table th,.aa-event-table td{padding:10px 16px;border-bottom:1px solid #edf0f3;color:var(--ink-body);font-size:12px;text-align:left;vertical-align:top}.aa-event-table th{color:var(--ink-muted);background:#fafbfc;font-size:11px;font-weight:650}.aa-event-table td:first-child{display:grid;gap:4px}.aa-event-table code{width:max-content;max-width:100%;overflow:hidden;padding:2px 4px;border-radius:4px;color:#3e5774;background:#eff3f7;font:11px/1.25 ui-monospace,Menlo,Consolas,monospace;text-overflow:ellipsis;white-space:nowrap}.aa-token-field{display:grid;gap:7px;margin-top:14px;color:var(--ink);font-size:12px;font-weight:650}.aa-token-field .input{width:100%;height:38px}@media(max-width:700px){.aa-tool-card>header{grid-template-columns:40px minmax(0,1fr)}.aa-tool-card>header .aa-status{grid-column:2}.aa-detection{align-items:flex-start;display:grid}.aa-detect-tags{justify-content:flex-start}.aa-connector-row{grid-template-columns:auto minmax(0,1fr)}.aa-connector-row.no-action{grid-template-columns:auto minmax(0,1fr)}.aa-connector-state{grid-column:2}.aa-connector-row .btn{grid-column:1/-1;width:100%}.aa-event-table th,.aa-event-table td{padding:9px 11px}.aa-event-table th:nth-child(2),.aa-event-table td:nth-child(2){display:none}}';
+      '.aa-page{display:grid;gap:16px;max-width:1080px}.aa-page-head{margin-bottom:16px}.aa-page-sub{margin:2px 0 0;font-size:13px;line-height:1.5}.aa-page-sub a{color:var(--brand);font-weight:600;text-decoration:none}.aa-page-sub a:hover{text-decoration:underline}.aa-config-stack{display:grid;gap:14px}.aa-tool-card{overflow:hidden;border:1px solid var(--hair);border-radius:12px;background:#fff}.aa-tool-card>header{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;padding:17px 18px 14px;border-bottom:1px solid #eef1f4}.aa-tool-actions{display:flex;align-items:center;gap:10px;flex:none;justify-self:end}.aa-tool-actions .btn{height:28px;padding:0 12px;font-size:12px}.aa-tool-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:10px}.aa-tool-icon.meta{color:#1466d9;background:#eaf2ff}.aa-tool-icon.ga4{color:#d97706;background:#fff4df}.aa-tool-icon.gtm{color:#246fdb;background:#edf5ff}.aa-tool-icon.trybe{color:#0f766e;background:#e6f7f4}.aa-tool-card h2{margin:0;color:var(--ink);font-size:16px;line-height:1.35}.aa-tool-card header p{margin:4px 0 0;color:var(--ink-muted);font-size:12px;line-height:1.5}.aa-status{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;color:#6b7280;background:#f4f5f7;font-size:11px;font-weight:700;white-space:nowrap}.aa-status i{width:6px;height:6px;border-radius:50%;background:#8a94a6}.aa-status.active{color:#167447;background:#e6f6ec}.aa-status.active i{background:#1a9b56}.aa-status.detected{color:#185e9d;background:#eaf4ff}.aa-status.detected i{background:#3585d6}.aa-status.attention{color:#aa5410;background:#fff0df}.aa-status.attention i{background:#d97706}.aa-pixel-table-wrap{border-top:1px solid var(--hair)}.aa-pixel-table{width:100%;table-layout:fixed;font-size:13.5px}.aa-pixel-table thead th,.aa-pixel-table tbody td{padding:12px 16px;vertical-align:middle;white-space:nowrap}.aa-pixel-table thead th{background:#fff;text-align:left;font-weight:600;color:var(--ink)}.aa-pixel-table tbody td{color:var(--ink-body)}.aa-pixel-table tbody tr{cursor:default}.aa-pixel-table th:nth-child(1),.aa-pixel-table td:nth-child(1){width:160px}.aa-pixel-table th:nth-child(2),.aa-pixel-table td:nth-child(2){width:130px}.aa-pixel-table .aa-action-cell{width:110px}.aa-pixel-table--cred th:nth-child(3),.aa-pixel-table--cred td:nth-child(3){width:150px}.aa-pixel-table--cred .aa-cred-cell{width:auto;max-width:0}.aa-pixel-table:not(.aa-pixel-table--cred) th:nth-child(3),.aa-pixel-table:not(.aa-pixel-table--cred) td:nth-child(3){width:auto;max-width:0}.aa-pixel-table .aa-cred-value{display:block;overflow:hidden;min-width:0;color:var(--ink-body);font:13.5px/1.35 ui-monospace,Menlo,Consolas,monospace;text-overflow:ellipsis;white-space:nowrap;cursor:default}.aa-pixel-table .sp-icon-btn{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:7px;border:0;background:transparent;color:var(--ink-muted);cursor:pointer}.aa-pixel-table .sp-icon-btn:hover{background:var(--panel);color:var(--ink)}.aa-pixel-table .sp-icon-btn.danger:hover{color:var(--err)}.aa-event-coverage{overflow:hidden;border:1px solid var(--hair);border-radius:12px;background:#fff}.aa-event-coverage-head{display:grid;gap:3px;padding:16px 18px}.aa-event-coverage-head strong{color:var(--ink);font-size:14px}.aa-event-coverage-head small{color:var(--ink-muted);font-size:12px;line-height:1.45}.aa-event-note{display:flex;gap:10px;margin:0 18px 14px;padding:10px 11px;border:1px solid #dbe8fb;border-radius:8px;color:#365675;background:#f7faff;font-size:12px;line-height:1.5}.aa-event-note svg{flex:none;margin-top:1px}.aa-event-note-copy{display:grid;gap:5px;min-width:0}.aa-event-note-copy p{margin:0}.aa-event-table{width:100%;border-collapse:collapse;border-top:1px solid #edf0f3}.aa-event-table th,.aa-event-table td{padding:10px 16px;border-bottom:1px solid #edf0f3;color:var(--ink-body);font-size:12px;text-align:left;vertical-align:top}.aa-event-table th{color:var(--ink-muted);background:#fafbfc;font-size:11px;font-weight:650}.aa-event-table td:first-child{display:grid;gap:4px}.aa-event-table code{width:max-content;max-width:100%;overflow:hidden;padding:2px 4px;border-radius:4px;color:#3e5774;background:#eff3f7;font:11px/1.25 ui-monospace,Menlo,Consolas,monospace;text-overflow:ellipsis;white-space:nowrap}.aa-token-field{display:grid;gap:7px;margin-top:14px;color:var(--ink);font-size:12px;font-weight:650}.aa-token-field .input{width:100%;height:38px;font-weight:400}.aa-disconnect{border:0;background:transparent;color:var(--err);font:inherit;font-size:12px;font-weight:650;cursor:pointer}.aa-token-field .input::placeholder{font-weight:400}.aa-modal-list{display:grid;gap:9px;margin:4px 0}.aa-modal-list>div{display:flex;justify-content:space-between;gap:16px;padding-bottom:9px;border-bottom:1px solid #edf0f3;color:var(--ink-muted);font-size:12px}.aa-modal-list>div:last-child{border-bottom:0}.aa-modal-list b{color:var(--ink);font-weight:600;text-align:right}.aa-modal-note{margin:14px 0 0;padding:10px 11px;border:1px solid #dbe8fb;border-radius:8px;background:#f7faff;color:#365675;font-size:12px;line-height:1.5}@media(max-width:700px){.aa-tool-card>header{grid-template-columns:40px minmax(0,1fr)}.aa-tool-card>header .aa-tool-actions{grid-column:2;justify-self:start;flex-wrap:wrap}.aa-event-table th,.aa-event-table td{padding:9px 11px}.aa-event-table th:nth-child(2),.aa-event-table td:nth-child(2){display:none}}';
     paint(
-      '<style>' + styles + '.aa-token-field .input{font-weight:400}.aa-token-field .input::placeholder{font-weight:400}.aa-detected-source{display:grid;gap:7px;margin:0 0 14px;padding:12px 13px;border:1px solid #e1e8f0;border-radius:9px;background:#f8fafc}.aa-detected-source-label{color:var(--ink-muted);font-size:11px;font-weight:650}.aa-detected-source-details{display:flex;align-items:center;gap:10px;min-width:0}.aa-detected-source-details strong{color:var(--ink);font-size:13px}.aa-detected-source-id{display:flex;align-items:center;gap:5px;margin-left:auto;min-width:0;color:var(--ink-muted);font-size:11px}.aa-detected-source-id code{overflow:hidden;padding:3px 6px;border:1px solid #dfe7f0;border-radius:5px;color:#344054;background:#fff;font:600 11px/1.2 ui-monospace,Menlo,Consolas,monospace;text-overflow:ellipsis;white-space:nowrap}@media(max-width:520px){.aa-detected-source-details{align-items:flex-start;flex-wrap:wrap}.aa-detected-source-id{flex-basis:100%;margin-left:0}}@media(max-width:700px){.aa-event-coverage .tbl-wrap{overflow-x:auto}.aa-event-table{min-width:720px}.aa-event-table th:nth-child(2),.aa-event-table td:nth-child(2){display:table-cell}}</style>' +
+      '<style>' + styles + '</style>' +
       '<div class="aa-page">' +
-        pageHead('Advertising & analytics', 'BestCheckout automatically sends checkout events to tags detected on your Shopify storefront.') +
-        '<div class="aa-config-stack">' + metaCard + ga4Card + gtmCard + '</div>' +
-        '<section class="aa-event-coverage"><div class="aa-event-coverage-head"><strong>' + esc(localize('What BestCheckout sends')) + '</strong><small>' + esc(localize('Once a tag is detected, BestCheckout automatically sends the checkout events shown below. You never need to configure events one by one.')) + '</small></div><div class="aa-event-note">' + I.info + '<div class="aa-event-note-copy"><p>' + esc(localize('Browser events: Detected Meta Pixel, GA4, and GTM tags receive the matching browser events in the table.')) + '</p><p>' + esc(localize('Server Purchase: After you save a Meta access token or GA4 API secret, BestCheckout also sends completed purchases (Purchase) from the server; other checkout events stay browser-only. Within each destination, browser and server copies of the same order are counted once. Meta, GA4, and GTM each receive their own events.')) + '</p></div></div><div class="tbl-wrap"><table class="aa-event-table"><thead><tr><th>BestCheckout event</th><th>Meta</th><th>GA4</th><th>GTM</th></tr></thead><tbody>' + eventRows + '</tbody></table></div></section>' +
+        '<div class="aa-page-head"><div class="page-title" style="font-size:20px">' + esc(localize('Advertising & analytics')) + '</div><div class="aa-page-sub muted">' + esc(localize('BestCheckout automatically sends checkout events to tags detected on your Shopify storefront.')) + ' ' + esc(localize('If no tags are detected, go to')) + ' <a href="#/settings/base">' + esc(localize('Settings → Shopify connection')) + '</a> ' + esc(localize('and click Sync now to refresh detection.')) + '</div></div>' +
+        '<div class="aa-config-stack">' + toolCard('meta') + toolCard('ga4') + toolCard('gtm') + toolCard('trybe') + '</div>' +
+        '<section class="aa-event-coverage"><div class="aa-event-coverage-head"><strong>' + esc(localize('What BestCheckout sends')) + '</strong><small>' + esc(localize('Once a tag is detected, BestCheckout automatically sends the checkout events shown below. You never need to configure events one by one.')) + '</small></div><div class="aa-event-note">' + I.info + '<div class="aa-event-note-copy">' + eventNoteCopy + '</div></div><div class="tbl-wrap"><table class="aa-event-table"><thead><tr><th>BestCheckout event</th><th>Meta</th><th>GA4</th><th>GTM</th><th>Trybe</th></tr></thead><tbody>' + eventRows + '</tbody></table></div></section>' +
       '</div>',
       false
     );
 
-    const field = (label, attr, value, placeholder, opts) =>
-      '<label class="aa-token-field"><span>' + esc(localize(label)) + (opts && opts.optional ? ' <b class="muted" style="font-weight:500">(' + esc(localize('Optional')) + ')</b>' : '') + '</span><input class="input" type="' + ((opts && opts.secret) ? 'password' : 'text') + '" autocomplete="off" spellcheck="false" ' + ((opts && opts.readOnly) ? 'readonly ' : '') + attr + ' placeholder="' + esc(placeholder) + '" value="' + esc(value || '') + '" /></label>';
-    const detectionInfo = (detectedTag, identifierLabel, ids) =>
-      '<div class="aa-detected-source">' +
-        '<span class="aa-detected-source-label">' + esc(localize('Detected from your Shopify storefront')) + '</span>' +
-        '<div class="aa-detected-source-details"><strong>' + esc(localize(detectedTag)) + '</strong><span class="aa-detected-source-id"><span>' + esc(localize(identifierLabel)) + '</span><code>' + esc(ids.join(', ') || localize('No tag detected on your Shopify storefront')) + '</code></span></div>' +
-      '</div>';
-    const openMeta = () => {
-      if (!metaDetected) {
-        toast(localize('A unique storefront Pixel is required before server events can be enabled.'), 'warning');
+    const findItem = (channel, id) => (ensureChannel(channel).items || []).find((item) => String(item.id) === String(id));
+    const findPrimary = (channel, credentialKey) => (ensureChannel(channel).items || []).find((item) => credentialKey && String(item[credentialKey] || '').trim());
+    const spField = (label, attr, value, placeholder, opts) =>
+      '<label class="aa-token-field"><span>' + esc(localize(label)) + '</span><input class="input" type="' + ((opts && opts.secret) ? 'password' : 'text') + '" autocomplete="off" spellcheck="false" ' + attr + ' placeholder="' + esc(placeholder) + '" value="' + esc(value || '') + '"/></label>';
+    const openChannelEditor = (channel, existing) => {
+      const def = channelDefs[channel];
+      const bucket = ensureChannel(channel);
+      const isEdit = Boolean(existing);
+      if (!isEdit && !canAddItem(channel, def)) {
+        toast(localize(def.customCode
+          ? 'You can add one custom Trybe Pixel. Detected Pixels appear separately when BestCheckout finds them.'
+          : 'You can add up to 10 IDs in this channel.'), 'warning');
         return;
       }
-      const hasToken = Boolean(metaConfig.accessToken);
-      const staleToken = Boolean(hasToken && !metaMatch);
-      const dialog = modal({
-        title: hasToken ? 'Manage Meta tracking' : 'Configure Meta',
-        width: 540,
-        body: '<p class="muted" style="margin:0 0 14px;font-size:12.5px;line-height:1.55">' + esc(localize('BestCheckout uses the detected Pixel for browser events. Add an access token to also enable Conversions API.')) + '</p>' + detectionInfo('Meta Pixel', 'Pixel ID', metaIds) + (staleToken ? '<p class="muted" style="margin:14px 0 0;font-size:12px;line-height:1.55;color:#aa5410">' + esc(localize('Storefront Pixel changed. Enter a new access token for the detected Pixel before server events can resume.')) + '</p>' : '') + field('CAPI access token', 'data-aa-v2-meta-token', staleToken ? '' : metaConfig.accessToken, 'Paste access token', { optional: true }),
-        okText: 'Save',
-        onOk: (m, close) => {
-          const accessToken = (m.querySelector('[data-aa-v2-meta-token]') || {}).value || '';
-          if (staleToken && !accessToken.trim()) {
-            toast(localize('Please enter a new access token for the detected Pixel.'), 'warning');
+      if (def.customCode) {
+        const isDetected = isEdit && existing.source === 'detected';
+        const currentId = isEdit ? String(existing.id || '') : '';
+        const currentName = isEdit ? String(existing.name || '') : '';
+        const currentSnippet = isEdit ? String(existing.snippet || '') : '';
+        const currentCred = isEdit ? String(existing.apiKey || '') : '';
+        const ordersOn = Boolean(currentCred.trim());
+        const ordersBlock =
+          '<div class="aa-token-field"><span>' + esc(localize(def.capiTitle)) + '</span>' +
+          '<p class="muted" style="margin:0 0 10px;font-size:12.5px;line-height:1.55;font-weight:400">' + esc(localize(def.capiDesc)) + '</p>' +
+          '<div class="flex items-center gap-4" data-aa-capi-group style="font-weight:400">' +
+            '<label class="set-radio' + (ordersOn ? '' : ' on') + '" data-aa-capi="0"><span class="proc-radio">' + (ordersOn ? '' : '<span class="proc-dot"></span>') + '</span>' + esc(localize('No')) + '</label>' +
+            '<label class="set-radio' + (ordersOn ? ' on' : '') + '" data-aa-capi="1"><span class="proc-radio">' + (ordersOn ? '<span class="proc-dot"></span>' : '') + '</span>' + esc(localize('Yes')) + '</label>' +
+          '</div>' +
+          '<div data-aa-capi-token-wrap style="margin-top:12px;' + (ordersOn ? '' : 'display:none') + '">' +
+            '<input class="input" type="password" autocomplete="off" spellcheck="false" data-aa-credential placeholder="' + esc(def.fieldPlaceholder) + '" value="' + esc(currentCred) + '"/>' +
+          '</div></div>';
+        const body = (def.formHint
+          ? '<p class="muted" style="margin:0 0 14px;font-size:12.5px;line-height:1.55">' + esc(localize(def.formHint)) + '</p>'
+          : '') +
+          field(def.nameField, 'data-aa-name', currentName, def.namePlaceholder) +
+          (isDetected
+            ? field(def.idField, 'data-aa-id', currentId, def.idPlaceholder, { readOnly: true })
+            : areaField(def.snippetField, 'data-aa-snippet', currentSnippet, def.snippetPlaceholder)) +
+          ordersBlock;
+        const saveTrybe = (m, close) => {
+          const name = String((m.querySelector('[data-aa-name]') || {}).value || '').trim();
+          const snippet = isDetected
+            ? String(existing.snippet || '')
+            : String((m.querySelector('[data-aa-snippet]') || {}).value || '').trim();
+          const nextId = isDetected
+            ? currentId
+            : (parseTrybePixelCode(snippet) || '');
+          const enabled = Boolean(m.querySelector('[data-aa-capi="1"].on'));
+          const credential = String((m.querySelector('[data-aa-credential]') || {}).value || '').trim();
+          if (!isDetected && !snippet) {
+            toast(localize(def.snippetRequired), 'warning');
             return;
           }
-          if (accessToken.trim() && metaIds.length !== 1) {
-            toast(localize('A unique storefront Pixel is required before server events can be enabled.'), 'warning');
+          if (!nextId) {
+            toast(localize(def.pixelRequired), 'warning');
             return;
           }
-          meta.config = { pixelId: metaDetected, accessToken: accessToken.trim(), enabled: Boolean(accessToken.trim()) };
+          if (enabled && !credential) {
+            toast(localize(def.credentialRequired), 'warning');
+            return;
+          }
+          const duplicate = (bucket.items || []).some((other) => String(other.id) === nextId && (!isEdit || String(other.id) !== currentId));
+          if (duplicate) {
+            toast(localize('This ID is already listed.'), 'warning');
+            return;
+          }
+          if (enabled) {
+            if (hasPrimaryConflict(nextId)) {
+              showPrimaryConflict();
+              return;
+            }
+            (bucket.items || []).forEach((other) => {
+              if (String(other.id) !== currentId && String(other.id) !== nextId) clearCredential(other, def);
+            });
+          }
+          if (isEdit) {
+            existing.name = name;
+            existing.id = nextId;
+            if (!isDetected) existing.snippet = snippet;
+            if (enabled) {
+              existing.apiKey = credential;
+              existing.credentialSource = 'manual';
+            } else {
+              clearCredential(existing, def);
+            }
+          } else {
+            bucket.items.push({
+              id: nextId,
+              name: name,
+              source: 'manual',
+              snippet: snippet,
+              apiKey: enabled ? credential : '',
+              credentialSource: enabled ? 'manual' : '',
+            });
+          }
           close();
           renderAdvertisingAnalyticsV2();
-          toast(localize('Meta configuration saved.'));
-        },
-      });
-      const input = dialog.m.querySelector('[data-aa-v2-meta-token]');
-      if (input) input.focus();
-    };
-    const openGa4 = () => {
-      if (!ga4Detected) {
-        toast(localize('No tag detected on your Shopify storefront'), 'warning');
+          if (enabled) toast(localize(def.savedToast));
+          else if (isEdit) toast(localize('Trybe Pixel updated.'));
+          else toast(localize(def.addedToast));
+        };
+        const hasPrimaryConflict = (nextId) => {
+          const primary = findPrimary(channel, def.credentialKey);
+          return Boolean(primary && String(primary.id) !== currentId && String(primary.id) !== String(nextId || ''));
+        };
+        const showPrimaryConflict = () => alertModal({
+          title: localize('Only one Primary Orders API key is supported.'),
+          content: localize(def.conflictCopy),
+        });
+        const validateTrybeCredentialBlur = (m) => {
+          if (!m.querySelector('[data-aa-capi="1"].on')) return;
+          const credential = String((m.querySelector('[data-aa-credential]') || {}).value || '').trim();
+          if (!credential) return;
+          const nextId = isDetected
+            ? currentId
+            : (parseTrybePixelCode(String((m.querySelector('[data-aa-snippet]') || {}).value || '').trim()) || '');
+          if (hasPrimaryConflict(nextId)) showPrimaryConflict();
+        };
+        const dialog = modal({
+          title: isEdit ? def.editLabel : def.addLabel,
+          width: 560,
+          body: body,
+          okText: 'Save',
+          extraLeft: isEdit && canDeleteItem(existing, def)
+            ? '<button type="button" class="btn btn-default" data-disc style="color:var(--err);border-color:#f3c4ba">' + esc(localize('Delete')) + '</button>'
+            : '',
+          onExtra: (m, close) => {
+            requestDeleteItem(channel, existing, () => close());
+          },
+          onOk: (m, close) => saveTrybe(m, close),
+        });
+        const group = dialog.m.querySelector('[data-aa-capi-group]');
+        const wrap = dialog.m.querySelector('[data-aa-capi-token-wrap]');
+        if (group && wrap) {
+          group.querySelectorAll('[data-aa-capi]').forEach((el) => {
+            el.onclick = () => {
+              group.querySelectorAll('[data-aa-capi]').forEach((node) => {
+                node.classList.remove('on');
+                const dot = node.querySelector('.proc-radio');
+                if (dot) dot.innerHTML = '';
+              });
+              el.classList.add('on');
+              const dot = el.querySelector('.proc-radio');
+              if (dot) dot.innerHTML = '<span class="proc-dot"></span>';
+              wrap.style.display = el.getAttribute('data-aa-capi') === '1' ? '' : 'none';
+              if (el.getAttribute('data-aa-capi') === '1') validateTrybeCredentialBlur(dialog.m);
+            };
+          });
+        }
+        const trybeCred = dialog.m.querySelector('[data-aa-credential]');
+        if (trybeCred) trybeCred.addEventListener('blur', () => validateTrybeCredentialBlur(dialog.m));
+        const focus = dialog.m.querySelector(isDetected || isEdit ? '[data-aa-name]' : '[data-aa-snippet]');
+        if (focus) focus.focus();
         return;
       }
-      const hasSecret = Boolean(ga4Config.apiSecret);
-      const staleSecret = Boolean(hasSecret && !ga4Match);
-      const dialog = modal({
-        title: hasSecret ? 'Manage GA4' : 'Configure GA4',
-        width: 540,
-        body: '<p class="muted" style="margin:0 0 14px;font-size:12.5px;line-height:1.55">' + esc(localize('BestCheckout uses the detected Measurement ID for checkout browser events. Add an API secret to also send GA4 server-side events.')) + '</p>' + detectionInfo('Google Analytics 4', 'Measurement ID', ga4Ids) + (staleSecret ? '<p class="muted" style="margin:14px 0 0;font-size:12px;line-height:1.55;color:#aa5410">' + esc(localize('Storefront Measurement ID changed. Enter a new API secret for the detected Measurement ID before server events can resume.')) + '</p>' : '') + field('API secret (Measurement Protocol)', 'data-aa-v2-ga4-secret', staleSecret ? '' : ga4Config.apiSecret, 'Paste API secret', { optional: true, secret: true }),
-        okText: 'Save',
-        onOk: (m, close) => {
-          const apiSecret = (m.querySelector('[data-aa-v2-ga4-secret]') || {}).value || '';
-          if (staleSecret && !apiSecret.trim()) {
-            toast(localize('Please enter a new API secret for the detected Measurement ID.'), 'warning');
+      const currentId = isEdit ? String(existing.id || '') : '';
+      const currentName = isEdit ? String(existing.name || '') : '';
+      const currentCred = def.credentialKey && isEdit ? String(existing[def.credentialKey] || '') : '';
+      const capiOn = Boolean(def.credentialKey && currentCred.trim());
+      const capiBlock = def.credentialKey
+        ? '<div class="aa-token-field"><span>' + esc(localize(def.capiTitle)) + '</span>' +
+          '<p class="muted" style="margin:0 0 10px;font-size:12.5px;line-height:1.55;font-weight:400">' + esc(localize(def.capiDesc)) + '</p>' +
+          '<div class="flex items-center gap-4" data-aa-capi-group style="font-weight:400">' +
+            '<label class="set-radio' + (capiOn ? '' : ' on') + '" data-aa-capi="0"><span class="proc-radio">' + (capiOn ? '' : '<span class="proc-dot"></span>') + '</span>' + esc(localize('No')) + '</label>' +
+            '<label class="set-radio' + (capiOn ? ' on' : '') + '" data-aa-capi="1"><span class="proc-radio">' + (capiOn ? '<span class="proc-dot"></span>' : '') + '</span>' + esc(localize('Yes')) + '</label>' +
+          '</div>' +
+          '<div data-aa-capi-token-wrap style="margin-top:12px;' + (capiOn ? '' : 'display:none') + '">' +
+            '<input class="input" type="' + (def.secretInput ? 'password' : 'text') + '" autocomplete="off" spellcheck="false" data-aa-credential placeholder="' + esc(def.fieldPlaceholder) + '" value="' + esc(currentCred) + '"/>' +
+          '</div></div>'
+        : '';
+      const hasPrimaryConflict = (nextId) => {
+        if (!def.credentialKey) return false;
+        const primary = findPrimary(channel, def.credentialKey);
+        return Boolean(primary && String(primary.id) !== currentId && String(primary.id) !== String(nextId || ''));
+      };
+      const showPrimaryConflict = () => alertModal({
+        title: localize('Only one Primary CAPI combination is supported per channel.'),
+        content: localize(def.conflictCopy),
+      });
+      const validateCredentialBlur = (m) => {
+        if (!def.credentialKey) return;
+        if (!m.querySelector('[data-aa-capi="1"].on')) return;
+        const credential = String((m.querySelector('[data-aa-credential]') || {}).value || '').trim();
+        if (!credential) return;
+        const nextId = String((m.querySelector('[data-aa-id]') || {}).value || '').trim();
+        if (hasPrimaryConflict(nextId)) showPrimaryConflict();
+      };
+      const saveItem = (m, close) => {
+        const name = String((m.querySelector('[data-aa-name]') || {}).value || '').trim();
+        const nextId = String((m.querySelector('[data-aa-id]') || {}).value || '').trim();
+        const enabled = def.credentialKey
+          ? Boolean(m.querySelector('[data-aa-capi="1"].on'))
+          : false;
+        const credential = def.credentialKey
+          ? String((m.querySelector('[data-aa-credential]') || {}).value || '').trim()
+          : '';
+        if (!nextId) {
+          toast(localize(def.idRequired), 'warning');
+          return;
+        }
+        if (enabled && !credential) {
+          toast(localize(def.credentialRequired), 'warning');
+          return;
+        }
+        const duplicate = (bucket.items || []).some((other) => String(other.id) === nextId && (!isEdit || String(other.id) !== currentId));
+        if (duplicate) {
+          toast(localize('This ID is already listed.'), 'warning');
+          return;
+        }
+        if (enabled) {
+          if (hasPrimaryConflict(nextId)) {
+            showPrimaryConflict();
             return;
           }
-          ga4.config = { measurementId: ga4Detected, apiSecret: apiSecret.trim(), enabled: Boolean(apiSecret.trim()) };
-          close();
-          renderAdvertisingAnalyticsV2();
-          toast(localize('GA4 configuration saved.'));
+          (bucket.items || []).forEach((other) => {
+            if (String(other.id) !== currentId && String(other.id) !== nextId) clearCredential(other, def);
+          });
+        }
+        if (isEdit) {
+          existing.name = name;
+          existing.id = nextId;
+          if (def.credentialKey) {
+            if (enabled) {
+              existing[def.credentialKey] = credential;
+              existing.credentialSource = 'manual';
+            } else {
+              clearCredential(existing, def);
+            }
+          }
+        } else {
+          const next = { id: nextId, name: name, source: 'manual' };
+          if (def.credentialKey) {
+            next[def.credentialKey] = enabled ? credential : '';
+            next.credentialSource = enabled ? 'manual' : '';
+          }
+          bucket.items.push(next);
+        }
+        close();
+        renderAdvertisingAnalyticsV2();
+        if (enabled) toast(localize(def.savedToast));
+        else if (isEdit) toast(localize(channel === 'ga4' ? 'Measurement ID updated.' : channel === 'gtm' ? 'GTM configuration saved.' : 'Pixel updated.'));
+        else toast(localize(def.addedToast));
+      };
+      const formHint = def.formHint
+        ? '<p class="muted" style="margin:0 0 14px;font-size:12.5px;line-height:1.55">' + esc(localize(def.formHint)) + '</p>'
+        : '';
+      const dialog = modal({
+        title: isEdit ? def.editLabel : def.addLabel,
+        width: 540,
+        body: formHint +
+          spField(def.nameField, 'data-aa-name', currentName, def.namePlaceholder) +
+          spField(def.idField, 'data-aa-id', currentId, def.idPlaceholder || def.idField) +
+          capiBlock,
+        okText: 'Save',
+        extraLeft: isEdit && canDeleteItem(existing, def)
+          ? '<button type="button" class="btn btn-default" data-disc style="color:var(--err);border-color:#f3c4ba">' + esc(localize('Delete')) + '</button>'
+          : '',
+        onExtra: (m, close) => {
+          requestDeleteItem(channel, existing, () => close());
         },
+        onOk: (m, close) => saveItem(m, close),
       });
-      const input = dialog.m.querySelector('[data-aa-v2-ga4-secret]');
-      if (input) input.focus();
+      const group = dialog.m.querySelector('[data-aa-capi-group]');
+      const wrap = dialog.m.querySelector('[data-aa-capi-token-wrap]');
+      if (group && wrap) {
+        group.querySelectorAll('[data-aa-capi]').forEach((el) => {
+          el.onclick = () => {
+            group.querySelectorAll('[data-aa-capi]').forEach((node) => {
+              node.classList.remove('on');
+              const dot = node.querySelector('.proc-radio');
+              if (dot) dot.innerHTML = '';
+            });
+            el.classList.add('on');
+            const dot = el.querySelector('.proc-radio');
+            if (dot) dot.innerHTML = '<span class="proc-dot"></span>';
+            wrap.style.display = el.getAttribute('data-aa-capi') === '1' ? '' : 'none';
+            if (el.getAttribute('data-aa-capi') === '1') validateCredentialBlur(dialog.m);
+          };
+        });
+      }
+      const credInput = dialog.m.querySelector('[data-aa-credential]');
+      if (credInput) credInput.addEventListener('blur', () => validateCredentialBlur(dialog.m));
+      const focus = dialog.m.querySelector(isEdit ? '[data-aa-name]' : '[data-aa-id]');
+      if (focus) focus.focus();
     };
-    root.querySelectorAll('[data-aa-v2]').forEach((button) => {
+
+    root.querySelectorAll('[data-aa-add]').forEach((button) => {
+      button.onclick = () => openChannelEditor(button.getAttribute('data-aa-add'), null);
+    });
+    root.querySelectorAll('[data-aa-edit]').forEach((button) => {
       button.onclick = () => {
-        const action = button.getAttribute('data-aa-v2');
-        if (action === 'meta') openMeta();
-        if (action === 'ga4') openGa4();
+        const channel = button.getAttribute('data-aa-edit');
+        const id = button.getAttribute('data-aa-id');
+        openChannelEditor(channel, findItem(channel, id));
+      };
+    });
+    const requestDeleteItem = (channel, item, afterClose) => {
+      const def = channelDefs[channel];
+      const bucket = ensureChannel(channel);
+      if (!item || !canDeleteItem(item, def)) {
+        toast(localize('Detected destination IDs cannot be deleted. Remove the manually added server credential instead, or clear it in Edit.'), 'warning');
+        return;
+      }
+      const removeCredentialOnly = item.source !== 'manual' && hasManualCredential(item, def);
+      confirm({
+        title: localize(removeCredentialOnly ? def.removeCredentialConfirm : def.deleteConfirm),
+        content: localize(removeCredentialOnly ? def.removeCredentialCopy : def.deleteConfirm),
+        okText: 'Delete',
+        danger: true,
+        onOk: () => {
+          if (removeCredentialOnly) {
+            clearCredential(item, def);
+            if (afterClose) afterClose();
+            renderAdvertisingAnalyticsV2();
+            toast(localize(def.removedToast));
+            return;
+          }
+          bucket.items = (bucket.items || []).filter((row) => String(row.id) !== String(item.id));
+          if (afterClose) afterClose();
+          renderAdvertisingAnalyticsV2();
+          toast(localize(def.deletedToast));
+        },
+      });
+    };
+    root.querySelectorAll('[data-aa-delete]').forEach((button) => {
+      button.onclick = () => {
+        const channel = button.getAttribute('data-aa-delete');
+        const id = button.getAttribute('data-aa-id');
+        requestDeleteItem(channel, findItem(channel, id));
       };
     });
   }

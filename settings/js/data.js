@@ -175,52 +175,81 @@ window.DATA_SETTINGS = {
   // credential until a merchant confirms the corresponding configuration.
   // =========================================================================
   advertisingAnalytics: {
+    // Multi-ID model: browser events can fire to every listed ID at once.
+    // Within each channel, only one item may hold the server credential
+    // (Meta Access Token / GA4 API Secret). That item is Primary and sorts first.
     meta: {
       detection: {
         pixelIds: ['128745690123042'],
         source: 'Detected on your Shopify storefront',
       },
-      // Mirrors the independent Meta Pixel + CAPI configuration endpoint.
-      config: {
-        pixelId: '',
-        accessToken: '',
-        enabled: false,
-      },
+      items: [
+        { id: '128745690123042', name: 'Meta primary', source: 'detected', accessToken: 'EAABwzLixnjYBOZCAzR8kQmH5nP2vL9xYcT4uW6aB1dF3gH7jK0mN8pQ5rS2tV9wXyZ0aBcDeFgHiJkLmNoPqRsTuVwXyZ1a2b3c4d5e6f7g8h9', credentialSource: 'manual' },
+        { id: '998877665544332', name: 'BestCheckout pixel', source: 'manual', accessToken: '', credentialSource: '' },
+      ],
     },
     ga4: {
       detection: {
         measurementIds: ['G-4N8P7HJ2'],
         source: 'Detected on your Shopify storefront',
       },
-      // Mirrors the independent GA4 configuration endpoint. API secret stays
-      // optional so browser delivery works without GA4 Measurement Protocol.
-      config: {
-        measurementId: 'G-4N8P7HJ2',
-        apiSecret: '',
-        enabled: true,
-      },
+      items: [
+        { id: 'G-4N8P7HJ2', name: 'GA4 main', source: 'detected', apiSecret: 'aBc_DeFgHiJkLmNoPqRsTu' },
+      ],
     },
     gtm: {
       detection: {
-        containerIds: ['GTM-N8X4P6Q'],
+        containerIds: ['GTM-ABC1234'],
         source: 'Detected on your Shopify storefront',
       },
-      // Mirrors the independent GTM configuration endpoint.
-      config: {
-        containerId: 'GTM-N8X4P6Q',
-        enabled: true,
+      items: [
+        { id: 'GTM-ABC1234', name: 'GTM checkout', source: 'detected' },
+      ],
+    },
+    // Trybe: detected when Trybe linked Shopify installs storefront tracking
+    // that BestCheckout can see. Merchants may also paste a custom snippet + Orders API key.
+    // Capacity: at most 1 detected + 1 manual (2 total).
+    trybe: {
+      detection: {
+        pixelCodes: ['px_6524bd646578'],
+        source: 'Detected from Trybe Shopify install',
       },
+      items: [
+        { id: 'px_6524bd646578', name: 'Trybe Shopify', source: 'detected', apiKey: 'tb_ord_live_9c4e2a1f8b7d6e0a3c5f', snippet: '' },
+      ],
     },
     events: [
-      { id: 'begin_checkout', label: 'Checkout started', meta: 'InitiateCheckout', ga4: 'begin_checkout', gtm: 'begin_checkout', delivery: 'Checkout session · once' },
-      { id: 'checkout_contact_info', label: 'Contact information', meta: '—', ga4: 'checkout_contact_info', gtm: 'checkout_contact_info', delivery: 'Browser event' },
-      { id: 'add_shipping_info', label: 'Shipping information', meta: '—', ga4: 'add_shipping_info', gtm: 'add_shipping_info', delivery: 'Browser event' },
-      { id: 'add_payment_info', label: 'Payment information', meta: 'AddPaymentInfo', ga4: 'add_payment_info', gtm: 'add_payment_info', delivery: 'Browser event' },
-      { id: 'post_purchase_offer_view', label: 'Post-purchase offer', meta: 'PostPurchaseOfferView', ga4: 'post_purchase_offer_view', gtm: 'post_purchase_offer_view', delivery: 'Browser event' },
-      { id: 'post_purchase_offer_accept', label: 'Post-purchase offer accepted', meta: 'PostPurchaseOfferAccept', ga4: 'post_purchase_offer_accept', gtm: 'post_purchase_offer_accept', delivery: 'Browser event' },
-      { id: 'post_purchase_offer_decline', label: 'Post-purchase offer declined', meta: 'PostPurchaseOfferDecline', ga4: 'post_purchase_offer_decline', gtm: 'post_purchase_offer_decline', delivery: 'Browser event' },
-      { id: 'purchase', label: 'Completed purchase', meta: 'Purchase', ga4: 'purchase', gtm: 'purchase', delivery: 'Browser + server · once per order' },
+      { id: 'begin_checkout', label: 'Checkout started', meta: 'InitiateCheckout', ga4: 'begin_checkout', gtm: 'begin_checkout', trybe: '—', delivery: 'Checkout session · once' },
+      { id: 'checkout_contact_info', label: 'Contact information', meta: '—', ga4: 'checkout_contact_info', gtm: 'checkout_contact_info', trybe: '—', delivery: 'Browser event' },
+      { id: 'add_shipping_info', label: 'Shipping information', meta: '—', ga4: 'add_shipping_info', gtm: 'add_shipping_info', trybe: '—', delivery: 'Browser event' },
+      { id: 'add_payment_info', label: 'Payment information', meta: 'AddPaymentInfo', ga4: 'add_payment_info', gtm: 'add_payment_info', trybe: '—', delivery: 'Browser event' },
+      { id: 'post_purchase_offer_view', label: 'Post-purchase offer', meta: 'PostPurchaseOfferView', ga4: 'post_purchase_offer_view', gtm: 'post_purchase_offer_view', trybe: '—', delivery: 'Browser event' },
+      { id: 'post_purchase_offer_accept', label: 'Post-purchase offer accepted', meta: 'PostPurchaseOfferAccept', ga4: 'post_purchase_offer_accept', gtm: 'post_purchase_offer_accept', trybe: '—', delivery: 'Browser event' },
+      { id: 'post_purchase_offer_decline', label: 'Post-purchase offer declined', meta: 'PostPurchaseOfferDecline', ga4: 'post_purchase_offer_decline', gtm: 'post_purchase_offer_decline', trybe: '—', delivery: 'Browser event' },
+      { id: 'purchase', label: 'Completed purchase', meta: 'Purchase', ga4: 'purchase', gtm: 'purchase', trybe: 'Checkout', delivery: 'Browser + server · once per order' },
     ],
+  },
+
+  // Plover Studio open-box mock: no storefront tags detected yet.
+  advertisingAnalyticsByStore: {
+    'Plover Studio': {
+      meta: {
+        detection: { pixelIds: [], source: 'Detected on your Shopify storefront' },
+        items: [],
+      },
+      ga4: {
+        detection: { measurementIds: [], source: 'Detected on your Shopify storefront' },
+        items: [],
+      },
+      gtm: {
+        detection: { containerIds: [], source: 'Detected on your Shopify storefront' },
+        items: [],
+      },
+      trybe: {
+        detection: { pixelCodes: [], source: 'Detected from Trybe Shopify install' },
+        items: [],
+      },
+    },
   },
 
   // =========================================================================

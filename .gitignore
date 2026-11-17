@@ -4,3 +4,13 @@ dist/
 .env
 .env.*
 !.env.example
+
+# Local secrets and tooling
+*账密*
+bestcheckout系统相关账密.rtf
+.lark-cli-runtime/
+.lark-home/
+.feishu-docs/
+.tmp-*.json
+*.rp
+_feishu_trybe_assets/
