@@ -6,6 +6,7 @@
 | V1.1 | 2026.11.16 | 服务端凭证仅手动; 列表去掉 Status / Pages; 凭证列展示原文 | 李东杰 |
 | V1.2 | 2026.11.16 | Primary 冲突改为纯报错; Save / 失焦双校验; 列表对齐系统 .tbl | 李东杰 |
 | V1.3 | 2026.11.16 | 按推荐商品 / Trybe PRD 架构重排, 补总览、验收、待补充 | 李东杰 |
+| V1.4 | 2026.11.18 | 凭证三处分开: 暗提示完整说明, 输入框展示原文, 列表按支付方式掩码; 输入框常显且非必填 | 李东杰 |
 
 # 1. 概述
 
@@ -25,7 +26,7 @@ Trybe 渠道在此基础上单独增量, 见: https://bestfulfill.feishu.cn/wiki
 2. 列表区分 Source (Shopify store / Manual setup), 交互对齐员工列表.
 3. 统一添加 / 编辑弹窗; 同渠道仅一组 Primary 服务端凭证.
 4. 删除按来源分级, 避免误删店铺检测到的 Pixel / ID.
-5. 服务端凭证列直接展示原文; Primary 冲突只报错提示.
+5. 凭证三处分开: 暗提示写完整说明, 输入框展示原文, 列表按支付方式掩码; Primary 冲突只报错提示.
 
 ### 1.1.2 范围说明
 
@@ -45,7 +46,7 @@ Trybe 渠道在此基础上单独增量, 见: https://bestfulfill.feishu.cn/wiki
 | 入口 | 渠道卡 | Meta / GA4 / GTM 卡片头展示检测状态和添加按钮 | 添加按钮高度 28px |
 | 列表管理 | 多 ID 列表 | 展示 ID、Source、Name、服务端凭证 (GTM 无)、Action | 无内容时不展示列表行; 不展示 Status、Pages |
 | 条数 | 上限 10 | 每渠道最多 10 条, 全部展示 | 无分页 |
-| 配置 | 添加 / 编辑 | Name + ID + 可选服务端开关与凭证 | 凭证一律手动粘贴 |
+| 配置 | 添加 / 编辑 | Name + ID + 常显的服务端凭证输入框 | 凭证一律手动粘贴; 非必填 |
 | 删除 | 分级删除 | 手动行可整行删; 检测行最多只清凭证 | 见 3.3 |
 | Primary | 单组凭证 | 同渠道仅一组已保存服务端凭证生效, 排在列表前 | 冲突只报错 |
 
@@ -71,7 +72,7 @@ Trybe 渠道在此基础上单独增量, 见: https://bestfulfill.feishu.cn/wiki
 | 2 | 卡片头 | 左侧渠道说明; 右侧检测状态 (Detected / Not detected) + 添加按钮 |  | 添加按钮高度 28px |
 | 3 | 空态 | 无列表内容时不展示列表行, 仅保留卡头和添加入口 |  |  |
 | 4 | 条数 | 每渠道最多 10 条, 全部展示, 无展开收起, 无分页 |  |  |
-| 5 | 原型预览 | http://127.0.0.1:4200/app/?reload=20261116-multipixel33&store=Plover+Studio#/settings/advertising-analytics |  | Lavender Labs 为检测态 mock |
+| 5 | 原型预览 | http://127.0.0.1:4200/app/?reload=20261118-multipixel47&store=Plover+Studio#/settings/advertising-analytics |  | Lavender Labs 为检测态 mock |
 
 ### 3.1.2 列表字段
 
@@ -80,7 +81,7 @@ Trybe 渠道在此基础上单独增量, 见: https://bestfulfill.feishu.cn/wiki
 | 1 | ID | Pixel ID / Measurement ID / Container ID |  |
 | 2 | Source | 检测到 → Shopify store; 手动添加 → Manual setup |  |
 | 3 | Name | Pixel name / Measurement name / Container name |  |
-| 4 | 服务端凭证 | Meta: Conversions API 展示 Access Token 原文; GA4: Measurement Protocol 展示 API Secret 原文; 无凭证 → `—` | GTM 无此列; 列宽自适应, 不够 `...` 省略, hover 全文; 对齐系统 `.tbl` padding 12px 16px |
+| 4 | 服务端凭证 | 有已保存凭证 → 按账单支付方式掩码: 前 4 位 + `····` + 后 4 位; 不足 8 位只显示 `····`; hover 为 Credential saved, 不展示原文; 无 → `—` | GTM 无此列; 中文 hover 为已保存凭证; 对齐系统 `.tbl` padding 12px 16px |
 | 5 | Action | 编辑始终有; 删除仅在可删时出现 | 图标交互对齐员工列表 |
 
 ### 3.1.3 排序与展示约束
@@ -99,8 +100,9 @@ Trybe 渠道在此基础上单独增量, 见: https://bestfulfill.feishu.cn/wiki
 |-|-|-|-|
 | 1 | Name | 可编辑名称 |  |
 | 2 | ID | 必填 | Pixel ID / Measurement ID / Container ID |
-| 3 | 服务端开关 | Meta: Conversions API; GA4: Measurement Protocol; 否 / 是 | GTM 无此块 |
-| 4 | 凭证输入 | 选「是」后出现 Access Token / API Secret 输入, 一律手动粘贴 |  |
+| 3 | 凭证输入 | Access Token / API Secret 输入框常显, 非必填, 一律手动粘贴 | GTM 无此块 |
+| 4 | 暗提示 | 写清要粘贴什么. Meta: `Paste access token`; GA4: `Paste API secret` | 不用省略号代替密钥样例 |
+| 5 | 输入内容 | 框内展示正在输入或已保存的原文 | 不用密码点, 也不用列表掩码 |
 
 ### 3.2.2 页脚
 
@@ -113,9 +115,9 @@ Trybe 渠道在此基础上单独增量, 见: https://bestfulfill.feishu.cn/wiki
 
 | # | 特性 | 特性描述 | 配图 | 备注 |
 |-|-|-|-|-|
-| 1 | 必填 | ID 必填; 开启服务端时凭证必填 |  |  |
+| 1 | 必填 | ID 必填; 凭证可留空. 留空则该行不启用服务端上报 |  |  |
 | 2 | 唯一性 | 同渠道 ID 不可重复 |  |  |
-| 3 | Primary 冲突 | 同渠道仅允许一组服务端凭证; 冲突时只弹出报错 (标题 + 说明 + 关闭), 不提供一键移除 |  | 商家需先在现有 Primary 上关掉凭证再保存 |
+| 3 | Primary 冲突 | 有凭证值时才校验同渠道唯一; 冲突时只弹出报错 (标题 + 说明 + 关闭), 不提供一键移除 |  | 商家需先清空现有 Primary 的凭证再保存 |
 | 4 | 双触发 | Save 与凭证输入失焦均做 Primary 冲突校验 |  |  |
 | 5 | Primary 定义 | 仅保存了凭证的行视为 Primary |  |  |
 | 6 | 凭证来源 | 凡保存的服务端凭证均记为商家手动添加; 不存在「检测到的凭证」 |  |  |
@@ -128,7 +130,7 @@ Trybe 渠道在此基础上单独增量, 见: https://bestfulfill.feishu.cn/wiki
 | 行类型 | 删除 | 结果 |
 |-|-|-|
 | 手动添加 | 可删 | 整行删除 (ID + 凭证如有) |
-| 检测到 + 已手动填服务端凭证 | 可删 | 只移除凭证, 保留检测 ID, 服务端凭证列变为 `—` |
+| 检测到 + 已手动填服务端凭证 | 可删 | 只清空凭证, 保留检测 ID, 服务端凭证列变为 `—` |
 | 检测到 + 无服务端凭证 | 不可删 | 不展示删除入口 |
 
 # 4. 逻辑边界
@@ -142,6 +144,7 @@ Trybe 渠道在此基础上单独增量, 见: https://bestfulfill.feishu.cn/wiki
 | 3 | 删除边界 | 检测到的 Pixel / ID 本身不可整行删除; 最多只清其上商家手填的服务端凭证 |
 | 4 | Primary | 同渠道永远只有一组服务端凭证生效; 冲突只报错, 不能静默覆盖后残留两组 |
 | 5 | 列表基线 | 不展示 Status、Pages; 交互对齐员工列表 |
+| 6 | 凭证三处 | 暗提示写完整说明; 输入框展示原文; 列表外显按支付方式掩码, hover 不展示原文 |
 
 ## 4.2 本轮不展开
 
@@ -159,10 +162,10 @@ Trybe 渠道在此基础上单独增量, 见: https://bestfulfill.feishu.cn/wiki
 | AC-001 | 打开广告数据页 | Meta / GA4 / GTM 为多 ID 列表渠道卡 | 3.1.1 |
 | AC-002 | 空渠道 | 无列表行; 保留卡头和添加按钮 | 3.1.1 |
 | AC-003 | 列表字段 | 有 ID / Source / Name / Action; Meta / GA4 另有服务端凭证列; 无 Status、Pages | 3.1.2 |
-| AC-004 | 凭证列展示 | 有凭证展示原文; 超长 `...` + hover 全文; 无凭证为 `—` | 3.1.2 |
+| AC-004 | 凭证列展示 | 有凭证为前 4 位 + `····` + 后 4 位; 不足 8 位为 `····`; 无凭证为 `—`; hover 为 Credential saved, 不出现原文 | 3.1.2 |
 | AC-005 | Source | 检测行 Shopify store; 手动行 Manual setup | 3.1.2 |
 | AC-006 | Primary 排序 | 有凭证的行排在前面 | 3.1.3 |
-| AC-007 | 添加 / 编辑保存 | ID 必填; 开服务端时凭证必填; 同渠道 ID 不重复 | 3.2.3 |
+| AC-007 | 添加 / 编辑保存 | ID 必填; 凭证可留空; 框内为原文; 暗提示为完整说明; 同渠道 ID 不重复 | 3.2.1 / 3.2.3 |
 | AC-008 | Primary 冲突 Save | 弹出报错 (仅标题 / 说明 / 关闭), 阻断保存 | 3.2.3 |
 | AC-009 | Primary 冲突失焦 | 凭证输入失焦同样弹出报错 | 3.2.3 |
 | AC-010 | 删除手动行 | 整行删除 | 3.3.1 |

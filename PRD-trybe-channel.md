@@ -7,6 +7,8 @@
 | V1.2 | 2026.11.16 | 列表移除 Status、Pages 两列, 与广告数据各渠道列表对齐 | 李东杰 |
 | V1.3 | 2026.11.16 | 明确 Trybe 三事件: Product Viewed / Add to Cart / Checkout; Checkout 含服务端上报 | 李东杰 |
 | V1.4 | 2026.11.16 | 按 Trybe 官方口径: 仅 purchase 映射 Checkout; begin_checkout 无对应 | 李东杰 |
+| V1.5 | 2026.11.17 | Orders API 列按原型改为掩码展示, 不再直接展示 key 原文 | 李东杰 |
+| V1.6 | 2026.11.18 | 凭证三处分开: 暗提示写完整说明, 输入框展示原文, 列表按支付方式掩码; 输入框常显且非必填 | 李东杰 |
 
 # 1. 概述
 
@@ -70,7 +72,7 @@ Trybe 一般先在 Shopify 安装好, 再来 BestCheckout 配置. 业务流程�
 | 1 | 入口 | 设置 → 广告数据; 在 Meta / GA4 / GTM 下方展示 Trybe Pixel & Orders API 渠道卡 |  |  |
 | 2 | 卡片头 | 左侧为渠道说明, 右侧为检测状态 (Detected / Not detected) 和 Add Trybe Pixel |  | Detected 仅在存在检测来源 Pixel 时成立; 仅有手动行不算 Detected |
 | 3 | 空态 | 无列表内容时不展示列表行, 仅保留卡头和添加入口 |  |  |
-| 4 | 原型预览 | http://127.0.0.1:4200/app/?reload=20261116-multipixel33&store=Lavender+Labs#/settings/advertising-analytics |  | Lavender Labs 为检测态 mock; Plover Studio 为未检测空态 |
+| 4 | 原型预览 | http://127.0.0.1:4200/app/?reload=20261118-multipixel47&store=Lavender+Labs#/settings/advertising-analytics |  | Lavender Labs 为检测态 mock; Plover Studio 为未检测空态 |
 
 ### 3.1.2 条数与检测
 
@@ -91,7 +93,7 @@ Trybe 一般先在 Shopify 安装好, 再来 BestCheckout 配置. 业务流程�
 | 1 | Pixel code | 检测得到, 或从 snippet 解析的 px_… |  |
 | 2 | Source | 检测到 → Shopify store; 手动添加 → Manual setup |  |
 | 3 | Name | 可编辑名称 |  |
-| 4 | Orders API | 有已保存 key → 直接展示 key 原文; 对齐系统 `.tbl` padding 12px 16px; 列宽自适应不够时 `...` 省略, hover 全文; 无 → `—` | 与 Pixel ID 同为明文展示 |
+| 4 | Orders API | 有已保存 key → 按账单支付方式同一掩码展示: 前 4 位 + `····` + 后 4 位; key 不足 8 位时只显示 `····`; hover 提示 Credential saved, 不展示 key 原文; 无 → `—` | 中文 hover 为已保存凭证; 对齐系统 `.tbl` padding 12px 16px |
 | 5 | Action | 编辑始终有; 删除仅手动行出现; 图标交互对齐员工列表 | 不展示 Status、Pages |
 
 ### 3.2.2 排序
@@ -106,15 +108,18 @@ Trybe 一般先在 Shopify 安装好, 再来 BestCheckout 配置. 业务流程�
 
 | # | 特性 | 特性描述 | 配图 | 备注 |
 |-|-|-|-|-|
-| 1 | 字段 | Name; Pixel snippet (必填); Orders API 否 / 是, 选「是」后出现 key 输入 (手动粘贴) | 见附录自定义弹窗截图 |  |
+| 1 | 字段 | Name; Pixel snippet (必填); Orders API key 输入框常显, 非必填, 手动粘贴 | 见附录自定义弹窗截图 |  |
 | 2 | 页脚 | 取消 / 保存 |  |  |
 | 3 | 解析 | snippet 须能解析出 Pixel code (px_…) |  |  |
+| 4 | 暗提示 | `Paste the Orders API key from Trybe Brand Portal` | 中文: 从 Trybe Brand Portal 粘贴 Orders API key. 不用 `sk_…` 或省略号代替 key 样例 |  |
+| 5 | 输入内容 | 框内展示正在输入或已保存的原文 | 不用密码点, 也不用列表掩码 |  |
+| 6 | 列表外显 | 保存后的列表仍按 3.2.1 掩码 | 与输入框原文分开 |  |
 
 ### 3.3.2 编辑检测行
 
 | # | 特性 | 特性描述 | 配图 | 备注 |
 |-|-|-|-|-|
-| 1 | 字段 | Name; Pixel code (只读); Orders API 否 / 是 + 手动粘贴 key |  |  |
+| 1 | 字段 | Name; Pixel code (只读); Orders API key 输入框常显, 可手填或清空 |  |  |
 | 2 | 页脚 | 取消 / 保存; 无删除 |  |  |
 
 ### 3.3.3 编辑手动行
@@ -128,9 +133,9 @@ Trybe 一般先在 Shopify 安装好, 再来 BestCheckout 配置. 业务流程�
 
 | # | 特性 | 特性描述 | 配图 | 备注 |
 |-|-|-|-|-|
-| 1 | 必填 | 手动添加时 snippet 必填; 开启 Orders API 时 key 必填 |  |  |
+| 1 | 必填 | 手动添加时 snippet 必填; Orders API key 可留空. 留空则该行不启用服务端上报 |  |  |
 | 2 | 唯一性 | 同渠道 Pixel code 不可重复 |  |  |
-| 3 | Primary 冲突 | 同渠道仅允许一组 Orders API key; 冲突时只弹出报错 (标题 + 说明 + 关闭); Save 与凭证失焦均校验 |  |  |
+| 3 | Primary 冲突 | 有 key 值时才校验同渠道唯一; 冲突时只弹出报错 (标题 + 说明 + 关闭); Save 与凭证失焦均校验 |  |  |
 | 4 | 凭证来源 | 凡保存的 Orders API key 均记为商家手动添加; 不存在「检测到的凭证」 |  |  |
 | 5 | P1 测试 | 添加 / 保存成功后支持测试上报为期望能力; 若无可行方案或耗时过长, 本轮可不做 |  | 可暂缓 |
 
@@ -148,7 +153,7 @@ Trybe 一般先在 Shopify 安装好, 再来 BestCheckout 配置. 业务流程�
 | # | 特性 | 特性描述 | 配图 | 备注 |
 |-|-|-|-|-|
 | 1 | 手动添加 | 整行删除 (Pixel + key 如有) |  |  |
-| 2 | 检测到 | 不可删; 若要关掉服务端, 在编辑里把 Orders API 设为否 |  |  |
+| 2 | 检测到 | 不可删; 若要关掉服务端, 在编辑里清空 Orders API key |  |  |
 
 ## 3.5 事件表与上报口径
 
@@ -168,6 +173,7 @@ Trybe 一般先在 Shopify 安装好, 再来 BestCheckout 配置. 业务流程�
 | 1 | 仅手动 | Meta Access Token、GA4 API Secret、Trybe Orders API key 都只能商家手动填写 |  | 不会从店铺检测到凭证 |
 | 2 | 检测范围 | 可检测的只有回传目标 ID (Pixel ID / Measurement ID / Container ID / Trybe Pixel code) |  |  |
 | 3 | 挂载对象 | 凭证可挂在检测到的目标上, 也可挂在手动添加的目标上; 差别只在挂载对象 |  |  |
+| 4 | 三处展示 | 暗提示写完整说明; 输入框展示原文; 列表外显按 3.2.1 掩码 |  | Meta / GA4 同一规则, 见多 Pixel PRD |
 
 # 4. 逻辑边界
 
@@ -182,6 +188,7 @@ Trybe 一般先在 Shopify 安装好, 再来 BestCheckout 配置. 业务流程�
 | 5 | 条数 | 算上检测一共两条; 未检测到则只有一条; 手动后仍可再展示检测行 |
 | 6 | 业务顺序 | 先 Shopify 安装 Trybe 并跑通关联, 再来 BestCheckout |
 | 7 | 凭证仅手动 | 所有渠道服务端上报凭证只能手动添加 |
+| 8 | 凭证三处 | 暗提示写完整说明; 输入框展示原文; 列表外显按支付方式掩码, hover 不展示原文 |
 
 ## 4.2 本轮不展开
 
@@ -201,12 +208,14 @@ Trybe 一般先在 Shopify 安装好, 再来 BestCheckout 配置. 业务流程�
 | AC-003 | 检测店铺 (如 Lavender Labs) | 展示检测行; Source 为 Shopify store; 无删除入口 | 3.1.2 / 3.4.1 |
 | AC-004 | 检测行上再手动添加 | 可添加 1 条手动行; 之后 Add 禁用; 列表最多 2 条 | 3.1.2 |
 | AC-005 | 先手动后出现检测 | 手动行保留; 检测行可再展示 | 3.1.2 |
-| AC-006 | 编辑检测行 | Pixel code 只读; 可手填 / 关闭 Orders API; 无删除 | 3.3.2 |
+| AC-006 | 编辑检测行 | Pixel code 只读; 可手填或清空 Orders API key; 无删除 | 3.3.2 |
 | AC-007 | 删除手动行 | 整行删除 Pixel 与 key | 3.4.2 |
 | AC-008 | 尝试删除检测行 | 不展示删除; 无法整行删除 | 3.4.1 |
 | AC-009 | Orders API Primary 冲突 | 保存第二组 key 时弹出报错提示 (仅标题 / 说明 / 关闭), 阻断保存 | 3.3.4 |
 | AC-010 | 事件表 | 存在 Trybe 列; 仅 `purchase` 映射 `Checkout`; `begin_checkout` 为 `—`; 文案说明三事件与 Orders API | 3.5 |
 | AC-011 | 服务端凭证通则文案 / 行为 | Token / Secret / Orders API key 均只能手填, 不会被检测 | 3.6 |
+| AC-012 | Orders API 列展示 | 有 key 时为前 4 位 + `····` + 后 4 位; 不足 8 位为 `····`; 无 key 为 `—`; hover 为 Credential saved, 不出现 key 原文 | 3.2.1 |
+| AC-013 | Orders API 输入 | 输入框常显且非必填; 暗提示为完整说明, 不含 `sk_…`; 框内为原文 | 3.3.1 |
 
 # 6. 待补充事项
 
