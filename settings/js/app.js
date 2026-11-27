@@ -7387,6 +7387,7 @@
           label: 'Trybe',
           href: 'https://jointrybe.com/brand/integrations',
         },
+        descriptionLearnMore: '../help/#guide=trybe-pixel',
         hideDetectStatus: true,
         connectorTitle: 'Trybe tracking',
         addLabel: 'Add Trybe Pixel',
@@ -7542,10 +7543,15 @@
     const renderToolDescription = (def) => {
       const text = localize(def.description);
       const link = def.descriptionLink;
-      if (!link || !link.token || !link.href) return esc(text);
-      const anchor = '<a href="' + esc(link.href) + '" target="_blank" rel="noopener noreferrer">' + esc(localize(link.label || 'Trybe')) + '</a>';
-      if (text.indexOf(link.token) === -1) return esc(text);
-      return text.split(link.token).map(esc).join(anchor);
+      let html = (!link || !link.token || !link.href || text.indexOf(link.token) === -1)
+        ? esc(text)
+        : text.split(link.token).map(esc).join(
+          '<a href="' + esc(link.href) + '" target="_blank" rel="noopener noreferrer">' + esc(localize(link.label || 'Trybe')) + '</a>'
+        );
+      if (def.descriptionLearnMore) {
+        html += ' <a href="' + esc(def.descriptionLearnMore) + '" target="_blank" rel="noopener noreferrer">' + esc(localize('Learn more')) + '</a>';
+      }
+      return html;
     };
     const toolCard = (channel) => {
       const def = channelDefs[channel];
