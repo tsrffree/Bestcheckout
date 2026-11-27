@@ -7387,7 +7387,7 @@
           label: 'Trybe',
           href: 'https://jointrybe.com/brand/integrations',
         },
-        descriptionLearnMore: '../help/#guide=trybe-pixel',
+        descriptionLearnMore: 'https://tsrffree.github.io/Bestcheckout/help/#guide=trybe-pixel',
         hideDetectStatus: true,
         connectorTitle: 'Trybe tracking',
         addLabel: 'Add Trybe Pixel',
